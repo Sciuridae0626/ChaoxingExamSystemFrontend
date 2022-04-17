@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { Modal, Form, Input, message } from 'antd';
 import { nanoid } from 'nanoid'
 import axios from 'axios'
+import cookie from 'react-cookies'
 import { MyIcon } from '../../../../assets/iconfont.js'
 import InfoCardCss from'./index.module.css'
 
 export default class InfoCard extends Component {
     
-    state = {userInfo: {}, isModalVisible: false}
+    state = {userInfo: {}, isModalVisible: false, nicknameValue: "", titleValue: "", emailValue: "", landlineValue: "", mobileValue: "", officeValue: "", dormValue: ""}
 
     /* 当前登录用户正在授课的均分变化信息 */
     classInfo = [
@@ -20,9 +21,30 @@ export default class InfoCard extends Component {
 
     /* 组件挂载完毕的钩子 */
     componentDidMount = () => {
-        axios.post("https://api.sciuridae.xyz/server/userInfo.php").then(
-            response => this.setState({userInfo: response.data})
+        axios.post("https://api.sciuridae.xyz/server/Home/InfoCard/userInfo.php", {
+            username: cookie.load("username")
+        })
+        .then(
+            response => {
+                this.setState({userInfo: response.data})
+                this.setState({nicknameValue: this.state.userInfo.nickname})
+                this.setState({titleValue: this.state.userInfo.title})
+                this.setState({emailValue: this.state.userInfo['e-mail']})
+                this.setState({landlineValue: this.state.userInfo.landline})
+                this.setState({mobileValue: this.state.userInfo.mobile})
+                this.setState({officeValue: this.state.userInfo.office})
+                this.setState({dormValue: this.state.userInfo.dorm})
+            }
         )
+        .catch(
+            error => {
+                console.log(error)
+                message.error({
+                    content: '信息加载失败！',
+                    style: {marginTop: '8.5vh'}
+                })
+            }
+        );
     }
 
     /* 组件即将卸载的钩子 */
@@ -37,16 +59,68 @@ export default class InfoCard extends Component {
 
     /* 点击对话框确定按钮 */
     handleOk = () => {
-        this.setState({isModalVisible: false})
-        message.success({
-            content: '修改信息成功！',
-            style: {marginTop: '8.5vh'}
+        axios.post("https://api.sciuridae.xyz/server/Home/InfoCard/updateUserInfo.php", {
+            username: cookie.load("username"),
+            nicknameValue: this.state.nicknameValue,
+            titleValue: this.state.titleValue,
+            emailValue: this.state.emailValue,
+            landlineValue: this.state.landlineValue,
+            mobileValue: this.state.mobileValue,
+            officeValue: this.state.officeValue,
+            dormValue: this.state.dormValue,
         })
+        .then(
+            response => {
+                this.setState({isModalVisible: false})
+                message.success({
+                    content: '信息修改成功！',
+                    style: {marginTop: '8.5vh'}
+                })
+                this.componentDidMount()
+            }
+        )
+        .catch(
+            error => {
+                console.log(error)
+                message.error({
+                    content: '信息修改失败！',
+                    style: {marginTop: '8.5vh'}
+                })
+            }
+        );
     }
 
     /* 点击对话框取消按钮 */
     handleCancel = () => {
         this.setState({isModalVisible: false})
+    }
+
+    nicknameOnChange = (event) => {
+        this.setState({nicknameValue: event.target.value})
+    }
+
+    titleOnChange = (event) => {
+        this.setState({titleValue: event.target.value})
+    }
+
+    emailOnChange = (event) => {
+        this.setState({emailValue: event.target.value})
+    }
+
+    landlineOnChange = (event) => {
+        this.setState({landlineValue: event.target.value})
+    }
+
+    mobileOnChange = (event) => {
+        this.setState({mobileValue: event.target.value})
+    }
+
+    officeOnChange = (event) => {
+        this.setState({officeValue: event.target.value})
+    }
+
+    dormOnChange = (event) => {
+        this.setState({dormValue: event.target.value})
     }
 
     render() {
@@ -118,37 +192,37 @@ export default class InfoCard extends Component {
 
                         <Form.Item label="昵称" name="nickname" style={{ marginBottom: 10 }}
                             rules={[{ required: true, message: '必填' }]} >
-                            <Input defaultValue={userInfo.nickname} style={{textAlign: 'center'}} />
+                            <Input onChange = {this.nicknameOnChange} defaultValue={userInfo.nickname} style={{textAlign: 'center'}} />
                         </Form.Item>
                         
                         <Form.Item label="职称" name="title" style={{ marginBottom: 10 }}
                             rules={[{ required: true, message: '必填' }]} >
-                            <Input defaultValue={userInfo.title} style={{textAlign: 'center'}} />
+                            <Input onChange = {this.titleOnChange} defaultValue={userInfo.title} style={{textAlign: 'center'}} />
                         </Form.Item>
                         
                         <Form.Item label="邮箱" name="e-mail" style={{ marginBottom: 10 }}
                             rules={[{ required: true, message: '必填' }]} >
-                            <Input defaultValue={userInfo['e-mail']} style={{textAlign: 'center'}} />
+                            <Input onChange = {this.emailOnChange} defaultValue={userInfo['e-mail']} style={{textAlign: 'center'}} />
                         </Form.Item>
                         
                         <Form.Item label="座机" name="landline" style={{ marginBottom: 10 }}
                             rules={[{ required: true, message: '必填' }]} >
-                            <Input defaultValue={userInfo.landline} style={{textAlign: 'center'}} />
+                            <Input onChange = {this.landlineOnChange} defaultValue={userInfo.landline} style={{textAlign: 'center'}} />
                         </Form.Item>
                         
                         <Form.Item label="手机" name="mobile" style={{ marginBottom: 10 }}
                             rules={[{ required: true, message: '必填' }]} >
-                            <Input defaultValue={userInfo.mobile} style={{textAlign: 'center'}} />
+                            <Input onChange = {this.mobileOnChange} defaultValue={userInfo.mobile} style={{textAlign: 'center'}} />
                         </Form.Item>
                         
                         <Form.Item label="办公室" name="office" style={{ marginBottom: 10 }}
                             rules={[{ required: true, message: '必填' }]} >
-                            <Input defaultValue={userInfo.office} style={{textAlign: 'center'}} />
+                            <Input onChange = {this.officeOnChange} defaultValue={userInfo.office} style={{textAlign: 'center'}} />
                         </Form.Item>
                         
                         <Form.Item label="校内住址" name="dorm" style={{ marginBottom: 10 }}
                             rules={[{ required: true, message: '必填' }]} >
-                            <Input defaultValue={userInfo.dorm} style={{textAlign: 'center'}} />
+                            <Input onChange = {this.dormOnChange} defaultValue={userInfo.dorm} style={{textAlign: 'center'}} />
                         </Form.Item>
                     </Form>
                 </Modal>
