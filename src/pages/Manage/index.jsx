@@ -7,11 +7,11 @@ import Student from './Student'
 import Character from './Character'
 import Handle from './Handle'
 import Notice from './Notice'
+import axios from 'axios'
 import './index.css'
 
 const { TabPane } = Tabs
 const { Option } = Select
-
 /* 创建新角色对话框 */
 const CreateRoleForm = ({ visible, onOk, onCancel }) => {
   const [roleForm] = Form.useForm()
@@ -72,29 +72,30 @@ const CreateUserForm = ({ visible, onOk, onCancel, showModal }) => {
     >
       <Form form={userForm} name="newUserInfo" style={{width: '80%'}} labelCol={{ span: 8 }} autoComplete="true" >
 
-        <Form.Item label="用&nbsp;&nbsp;户&nbsp;&nbsp;名" name="registerUsername" required style={{alignSelf: 'flex-start', width: '100%'}}
+      <Form.Item label="用&nbsp;&nbsp;户&nbsp;&nbsp;名" name="registerUsername" required style={{alignSelf: 'flex-start', marginBottom: '1.5em', width: '100%'}}
           rules={[{ required: true, message: '必填' }]}
-        ><Input autoComplete="off" /></Form.Item>
+      ><Input onChange = {Manage.usernameOnChange} autoComplete="off" /></Form.Item>
 
-        <Form.Item label="密&emsp;&emsp;码" name="registerPassword" required style={{alignSelf: 'flex-start', width: '100%'}}
+      <Form.Item label="密&emsp;&emsp;码" name="registerPassword" required style={{alignSelf: 'flex-start', marginBottom: '1.5em', width: '100%'}}
           rules={[{ required: true, message: '必填' }]}
-        ><Input type="password" autoComplete="new-password" /></Form.Item>
+      ><Input type="password" maxLength={20} placeholder='不超过20位，包含数字大小写字母'
+          onChange = {Manage.passwordOnChange} autoComplete="new-password" /></Form.Item>
 
-        <Form.Item label="确认密码" name="verify" required style={{alignSelf: 'flex-start', width: '100%'}}
+      <Form.Item label="确认密码" name="verify" required style={{alignSelf: 'flex-start', marginBottom: '1.5em', width: '100%'}}
           rules={[{ required: true, message: '必填' }]}
-        ><Input type="password" autoComplete="off" /></Form.Item>
-
-        <Form.Item label="姓&emsp;&emsp;名" name="name" required style={{alignSelf: 'flex-start', width: '100%'}}
+      ><Input type="password" onChange = {Manage.verifyOnChange} autoComplete="off" /></Form.Item>
+      
+      <Form.Item label="姓&emsp;&emsp;名" name="name" required style={{alignSelf: 'flex-start', marginBottom: '1.5em', width: '100%'}}
           rules={[{ required: true, message: '必填' }]}
-        ><Input autoComplete="off" /></Form.Item>
-
-        <Form.Item label="身份证号" name="idCradNumber" required style={{alignSelf: 'flex-start', width: '100%'}}
+      ><Input onChange = {Manage.nameOnChange} autoComplete="off" /></Form.Item>
+      
+      <Form.Item label="工&emsp;&emsp;号" name="workNumber" required style={{alignSelf: 'flex-start', marginBottom: '1.5em', width: '100%'}}
           rules={[{ required: true, message: '必填' }]}
-        ><Input autoComplete="off" /></Form.Item>
-
-        <Form.Item label="手&emsp;&emsp;机" name="mobile" required style={{alignSelf: 'flex-start', width: '100%'}}
+      ><Input onChange = {Manage.idCradNumberOnChange} autoComplete="off" /></Form.Item>
+      
+      <Form.Item label="手&emsp;&emsp;机" name="mobile" required style={{alignSelf: 'flex-start', marginBottom: '1.5em', width: '100%'}}
           rules={[{ required: true, message: '必填' }]}
-        ><Input autoComplete="off" /></Form.Item>
+      ><Input onChange = {Manage.mobileOnChange} autoComplete="off" /></Form.Item>
 
         <Form.Item label="角&emsp;&emsp;色" name="role" required
           rules={[{ required: true, message: '必填' }]}
@@ -115,8 +116,8 @@ const CreateUserForm = ({ visible, onOk, onCancel, showModal }) => {
 }
 export default class Manage extends Component {
 
-  state = { searchText: '', searchedColumn: '', isRoleVisible: false, isUserVisible: false, isImportVisible: false }
-
+  state = { searchText: '', searchedColumn: '', isRoleVisible: false, isUserVisible: false, isImportVisible: false , username: '', password: '',verify:'', name: '', idCradNumber: '', mobile: ''}
+  
   onCreate = (values) => {
     console.log('Received values of form: ', values)
   }
@@ -139,11 +140,40 @@ export default class Manage extends Component {
       })
     }
     else if(type === 'user') {
+      if(this.state.password === this.state.verify){
+        if(this.state.loginFlag){
+          axios.post('https://api.sciuridae.xyz/server/Login/register.php', {
+              username: this.state.username,
+              password: this.state.password,
+              name: this.state.name,
+              idCradNumber: this.state.idCradNumber,
+              email: "",
+              mobile: this.state.mobile,
+              office: "",
+              dorm: ""
+          })
+          .then(response => {
+            message.success({
+                content: '创建新用户成功！',
+                style: {marginTop: '8.5vh'}
+            })
+          })
+          .catch(error => {
+              console.log(error)
+              message.error({
+                  content: '创建新用户失败！',
+                  style: {marginTop: '8.5vh'}
+              })
+          })
+        }
+      }
+      else{
+        message.error({
+            content: '两次密码输入不一致！',
+            style: {marginTop: '8.5vh'}
+        })
+      }
       this.setState({isUserVisible: false})
-      message.success({
-          content: '创建新用户成功！',
-          style: {marginTop: '8.5vh'}
-      })
     }
     else if(type === 'import') {
       this.setState({isImportVisible: false})
@@ -153,11 +183,36 @@ export default class Manage extends Component {
       })
     }
   }
+
   /* 点击对话框取消按钮 */
   handleCancel = (type) => {
     if(type === 'role') this.setState({isRoleVisible: false})
     else if(type === 'user') this.setState({isUserVisible: false})
     else if(type === 'import') this.setState({isImportVisible: false})
+  }
+
+  usernameOnChange = (event) => {
+    this.setState({username: event.target.value})
+  }
+
+  passwordOnChange = (event) => {
+      this.setState({password: event.target.value})
+  }
+
+  verifyOnChange = (event) => {
+      this.setState({verify: event.target.value})
+  }
+
+  nameOnChange = (event) => {
+      this.setState({name: event.target.value})
+  }
+
+  idCradNumberOnChange = (event) => {
+      this.setState({idCradNumber: event.target.value})
+  }
+
+  mobileOnChange = (event) => {
+      this.setState({mobile: event.target.value})
   }
 
   render() {

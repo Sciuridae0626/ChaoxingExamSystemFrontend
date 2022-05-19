@@ -33,6 +33,6 @@ export default class InfoTable extends Component {
     }
 
     return <Table style={{width: '100%'}} bordered columns={columns} dataSource={data}
-      pagination={pagination} rowClassName={rowClassName} rowSelection={rowSelection} />;
+      pagination={pagination} rowClassName={rowClassName} rowSelection={rowSelection}/>;
   }
 }

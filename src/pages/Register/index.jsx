@@ -6,7 +6,7 @@ import RegisterCss from './index.module.css'
 
 export default class Register extends Component {
 
-    state = {loginFlag: false, username: '', password: '', verify: '', title: '', email: '', landline: '', mobile: '', office: '', dorm: ''}
+    state = {loginFlag: false, username: '', password: '',verify:'', name: '', idCradNumber: '', email: '', landline: '', mobile: '', office: '', dorm: ''}
 
     /* 组件挂载完毕的钩子 */
     componentDidMount = () => {
