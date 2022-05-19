@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Button, Space } from 'antd';
+import { Input, Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import { MyIcon } from '../../../assets/iconfont.js';
@@ -8,10 +8,7 @@ import TeacherCss from './index.module.css'
 
 export default class Teacher extends Component {
 
-  state = {
-    searchText: '',
-    searchedColumn: ''
-  }
+  state = {searchText: '', searchedColumn: '', isCodeVisible: false, whoseCode: ''}
 
   /* 列筛选框 */
   getColumnSearchProps = dataIndex => ({
@@ -93,6 +90,19 @@ export default class Teacher extends Component {
     clearFilters();
     this.setState({ searchText: '' });
   }
+
+  /* 显示对话框 */
+  showModal = (name) => {
+    this.setState({isCodeVisible: true, whoseCode: name})
+  }
+  /* 点击对话框确定按钮 */
+  handleOk = () => {
+    this.setState({isCodeVisible: false})
+  }
+  /* 点击对话框取消按钮 */
+  handleCancel = () => {
+    this.setState({isCodeVisible: false})
+  }
   
   render() {
     const columns = [
@@ -152,8 +162,8 @@ export default class Teacher extends Component {
         dataIndex: 'edit',
         key: 'edit',
         align: 'center',
-        render: () => <div className={TeacherCss.editButtonWrapper}>
-          <p id={TeacherCss.resetPassword}><MyIcon type='icon-chongzhimima' />&nbsp;重置密码</p>
+        render: (text, record) => <div className={TeacherCss.editButtonWrapper}>
+          <p id={TeacherCss.resetPassword} onClick={() => this.showModal(record.name)}><MyIcon type='icon-chongzhimima' />&nbsp;重置密码</p>
           <p id={TeacherCss.deleteAccount}><MyIcon type='icon-shanchuzhanghao' />&nbsp;删除账号</p>
         </div>
       }
@@ -326,9 +336,18 @@ export default class Teacher extends Component {
 
     const showTotal = (total) => <p> 共{total}条&emsp; </p>
 
+    const {isCodeVisible, whoseCode} = this.state
     return (
       <div className={TeacherCss.mainWrapper}>
         <InfoTable columns={columns} data={data} showTotal={showTotal} pageSize={12} />
+        
+        {/* 重置密码验证码对话框 */}
+        <Modal title={`${whoseCode}的重置密码验证码`} maskClosable={false} visible={isCodeVisible} onOk={this.handleOk}
+          onCancel={this.handleCancel} centered bodyStyle={{
+            display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'
+          }} footer={<Button key="submit" type="primary" onClick={this.handleOk}>确定</Button>}>
+            <p style={{margin: 0}}>重置密码验证码：gnlhazs，有效期至：2022-5-30</p>
+        </Modal>
       </div>
     )
   }

@@ -69,31 +69,31 @@ export default class Login extends Component {
         return (
             <div className={LoginCss.mainWrapper}>
                 <div className={LoginCss.cardWrapper}>
-                    <h1 style={{ marginBottom: '10%', fontWeight: 'bold' }}>Login</h1>
-                    <Form className={LoginCss.formWrapper}>
-                        <Form.Item label="Username" required style={{alignSelf: 'flex-start'}}
+                    <h1 style={{ marginBottom: '15%', fontWeight: 'bold', fontFamily: '微软雅黑' }}>用户登录</h1>
+                    <Form name="loginForm" className={LoginCss.formWrapper} autoComplete="true">
+                        <Form.Item label="用户名" required name="loginUsername" style={{alignSelf: 'flex-start'}}
                             rules={[{ required: true, message: 'Please input your username!' }]}
                         > <Input onChange = {this.usernameOnChange} /> </Form.Item>
 
-                        <Form.Item label="&nbsp;Password" required style={{alignSelf: 'flex-start'}}
+                        <Form.Item label="密&emsp;码" required name="loginPassword" style={{alignSelf: 'flex-start'}}
                             rules={[{ required: true, message: 'Please input your password!' }]}
                         > <Input type="password" onChange = {this.passwordOnChange} /> </Form.Item>
 
                         <Form.Item style={{ width: '100%', textAlign: 'center' }}>
                             <Form.Item name="remember" valuePropName="checked" noStyle>
-                                <Checkbox style={{overflow: 'hidden'}}>Remember me</Checkbox>
+                                <Checkbox style={{overflow: 'hidden'}}>记住账号</Checkbox>
                             </Form.Item>
-                            <Link to='' style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}> Forgot password </Link>
+                            <Link to='/reset' style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}> 忘记密码 </Link>
                         </Form.Item>
 
                         <Form.Item style={{marginBottom: 10, width: '100%'}}>
                             <Button type="primary" htmlType="submit" onClick={this.clickLogin}
                                 style={{width: '100%', 
                                 backgroundImage: 'linear-gradient(60deg , #606BFF, #82B8FF)'}}> 
-                            Login In </Button>
+                            登录</Button>
                         </Form.Item>
                         
-                        <Link to='' style={{width: '100%', textAlign: 'center'}}> Or register now! </Link>
+                        <Link to='/register' style={{width: '100%', textAlign: 'center'}}>立即注册</Link>
                     </Form>
                 </div>
             </div>

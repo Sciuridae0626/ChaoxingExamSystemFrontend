@@ -37,9 +37,9 @@
 
 /* 搜索输入框 */
 .searchInput {
-    width: 40%;
-    margin-left: 2%;
-    margin-right: 2%;
+    width: 35% !important;
+    margin-left: 2% !important;
+    margin-right: 2% !important;
     border-radius: 5px !important;
 }
 

@@ -178,7 +178,7 @@ export default class Handle extends Component {
 
   /* 点击取消的回调 */
   onCancel = () => {
-    this.setState({buffer: {index: -1, value: ''}})
+    // this.setState({buffer: {index: -1, value: ''}})
   }
   
   render() {

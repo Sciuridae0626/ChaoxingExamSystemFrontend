@@ -122,7 +122,7 @@
 /* 图表底部标题 */
 .dataItem > p {
     width: 100%;
-    margin-top: 3%;
+    margin-top: 1%;
     font-size: 0.8em;
     text-align: center;
     overflow: hidden;

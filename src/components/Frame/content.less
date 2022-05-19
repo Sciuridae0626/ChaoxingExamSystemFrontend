@@ -1,0 +1,21 @@
+/* 右侧中间Content部分的父容器 */
+.size(@width,@height) when (@width < @height){
+    margin-top: 0 !important;
+    minHeight: 720;
+}
+
+.size(@width,@height) when (@width >= @height){
+    margin-top: 64px !important;
+    height: 100% !important;
+}
+
+.ant-layout-content {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    // height: 100% !important;
+    margin: 0 !important;
+    padding: 24px 16px 0px !important;
+    // margin-top: 64px !important;
+    .size(100vw, 100vh);
+    /* overflow-y: scroll !important; */
+}

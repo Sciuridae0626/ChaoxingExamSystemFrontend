@@ -3,13 +3,32 @@ import { Checkbox, Button } from 'antd'
 import ThumbnailItemCss from './index.module.css'
 
 export default class ThumbnailItem extends Component {
+
+  /* 设为通过人脸的回调 */
+  passFace = (name) => {
+		if(window.confirm(`确定将${name}的人脸识别状态设为通过吗？`)){
+      this.props.passFace()
+		}
+  }
+
+  /* 设为未通过人脸的回调 */
+  failFace = (name) => {
+		if(window.confirm(`确定将${name}的人脸识别状态设为未通过吗？`)){
+      this.props.failFace()
+		}
+  }
+
+  onChange = (checkedValue) => {
+    this.props.changeChoosed(checkedValue)
+  }
+
   render() {
 
     const {pic, name, number, snap, cutting, authentication, tag} = this.props
     
     return (
       <div className={ThumbnailItemCss.itemWrapper}>
-        <Checkbox.Group>
+        <Checkbox.Group onChange={this.onChange}>
           <Checkbox value={number}></Checkbox>
         </Checkbox.Group>
         <div className={ThumbnailItemCss.infoCard}>
@@ -25,8 +44,8 @@ export default class ThumbnailItem extends Component {
             <p style={{marginBottom: '2%', fontWeight: 'bold'}}>{name}</p>
             <p style={{marginBottom: '2%'}}>学号：{number}</p>
             <p style={{marginBottom: '5%'}}>{snap}次抓拍 | {cutting}次切屏 | {authentication}次认证</p>
-            {tag === 4 ? <Button size='small' type='primary' shape='round'>设为通过人脸</Button>
-              : <Button size='small' type='dashed' shape='round' danger>设为未通过人脸</Button>}
+            {tag === 4 ? <Button size='small' type='primary' shape='round' onClick={() => this.passFace(name)}>设为通过人脸</Button>
+              : <Button size='small' type='dashed' shape='round' danger onClick={() => this.failFace(name)}>设为未通过人脸</Button>}
           </div>
         </div>
       </div>

@@ -204,7 +204,6 @@ export default class Build extends Component {
       ]
     }
   ]
-
   
   /* 列筛选框 */
   getColumnSearchProps = dataIndex => ({

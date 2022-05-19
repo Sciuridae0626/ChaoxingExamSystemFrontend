@@ -107,6 +107,17 @@ export default class Teach extends Component {
     this.setState({ searchText: '' });
   }
 
+  /* 下载试卷分析的回调 */
+  downloadPDF = () => {
+    // window.open("https://api.sciuridae.xyz/download/计算机网络期末考试A卷试卷分析-2022年5月.docx")
+    window.open("https://api.sciuridae.xyz/download/计算机网络期末考试A卷试卷分析-2022年5月.pdf")
+  }
+
+  /* 导出成绩单的回调 */
+  exportExcel = () => {
+    window.open("https://api.sciuridae.xyz/download/计算机网络期末考试A卷成绩单-2022年5月.xlsx")
+  }
+
   render() {
 
     const columns = [
@@ -206,7 +217,7 @@ export default class Teach extends Component {
     ]
 
     const showTotal = (total) => <div className='showTotalWrapper'>
-      <Button shape='round' size='middle'> 导出成绩单 </Button>
+      <Button shape='round' size='middle' onClick={this.exportExcel}> 导出成绩单 </Button>
       <p> &emsp;&emsp; 共{total}条&emsp; </p>
     </div>
 
@@ -233,7 +244,7 @@ export default class Teach extends Component {
           </div>
           <div>
             <Button shape='round' type='primary' ghost style={{marginRight: 15, color: '#8183FF', borderColor: '#8183FF'}}>查看试卷原题</Button>
-            <Button shape='round' type='primary' ghost>打印试卷报告</Button>
+            <Button shape='round' type='primary' ghost onClick={this.downloadPDF}>下载试卷分析</Button>
           </div>
         </div>
 

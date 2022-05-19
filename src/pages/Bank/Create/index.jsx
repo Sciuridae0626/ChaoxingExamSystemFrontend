@@ -230,9 +230,8 @@ export default class Create extends Component {
     if (oldIndex !== newIndex) {
       const newData = arrayMoveImmutable([].concat(dataSource), oldIndex, newIndex).filter(
         el => !!el,
-      );
-      console.log('Sorted items: ', newData);
-      this.setState({ dataSource: newData });
+      )
+      this.setState({ dataSource: newData })
     }
   }
   DraggableContainer = props => (
@@ -245,10 +244,10 @@ export default class Create extends Component {
     />
   )
   DraggableBodyRow = ({ className, style, ...restProps }) => {
-    const { dataSource } = this.state;
+    const { dataSource } = this.state
     // function findIndex base on Table rowKey props and should always be a right array index
-    const index = dataSource.findIndex(x => x.index === restProps['data-row-key']);
-    return <SortableItem index={index} {...restProps} />;
+    const index = dataSource.findIndex(x => x.index === restProps['data-row-key'])
+    return <SortableItem index={index} {...restProps} />
   }
   
   render() {
