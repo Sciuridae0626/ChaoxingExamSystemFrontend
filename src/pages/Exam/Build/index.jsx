@@ -7,14 +7,28 @@ import { MyIcon } from '../../../assets/iconfont.js'
 import InfoTable from '../../../components/InfoTable'
 import BigQ from './components/BigQ'
 import JudgeQ from './components/JudgeQ'
+import SingleQ from './components/SingleQ'
+import BlankQ from './components/BlankQ'
+import ConnectQ from './components/ConnectQ'
+import ShortQ from './components/ShortQ'
+import CalculateQ from './components/CalculateQ'
 import BuildCss from './index.module.css'
 import './iconfont.css'
 import './table.css'
+import { Link } from 'react-router-dom'
 
 const { Option } = Select;
 export default class Build extends Component {
   
-  state = { searchText: '', searchedColumn: '', problemInfo: [], isSelectVisible: false, isAutomaticVisible: false, isTemplateVisible: false }
+  state = {
+    searchText: '',
+    searchedColumn: '',
+    problemInfo: [],
+    isSelectVisible: false,
+    isAutomaticVisible: false,
+    isTemplateVisible: false,
+    haveImported: false
+  }
 
   /* 新建试卷实时统计信息 */
   realTimeData = {
@@ -308,10 +322,22 @@ export default class Build extends Component {
     }
     else if(type === 'template') {
       this.setState({isTemplateVisible: false})
-      message.success({
-          content: '模板导入成功！',
-          style: {marginTop: '8.5vh'}
+      
+      message.loading({
+        content: '加载中...',
+        key: 'updatable',
+        style: {marginTop: '8.5vh'}
       })
+      
+      setTimeout(() => {
+        this.setState({haveImported: true})
+        message.success({
+          content: '模板导入成功！',
+          key: 'updatable',
+          duration: 2,
+          style: {marginTop: '8.5vh'}
+        })
+      }, 1500);
     }
   }
   /* 点击对话框取消按钮 */
@@ -475,7 +501,7 @@ export default class Build extends Component {
   }
 
   render() {
-    const {problemInfo, isSelectVisible, isAutomaticVisible, isTemplateVisible} = this.state
+    const {problemInfo, isSelectVisible, isAutomaticVisible, isTemplateVisible, haveImported} = this.state
     const showTotal = (total) => <p> 共{total}条&emsp; </p>
     const columns = [
       {
@@ -622,7 +648,80 @@ export default class Build extends Component {
         </div>
 
         {/* 中部 */}
-        <div id='middle' className={BuildCss.middleWrapper} onClick={this.deleteShadow}>
+        {haveImported ? <div id='middle' className={BuildCss.middleWrapper} onClick={this.deleteShadow}>
+          {/* 试卷头部 */}
+          <Input id={BuildCss.title} value="计算机网络 2021-2022-2期末A卷" bordered={false}
+            style={{ fontSize: '1.5em', width: '100%', textAlign: 'center', color: '#181818', fontWeight: 'bold' }} />
+          <Input value="本卷用于《计算机网络》课程2021-2022学年第2学期期末测试" bordered={false}
+            style={{ fontSize: '1em', width: '100%', textAlign: 'center', marginTop: '1%' }} />
+          <Divider dashed style={{ borderColor: 'black', marginTop: '10px', marginBottom: '3%' }}/>
+          {/* 试卷快捷按钮 */}
+          <div className={BuildCss.lineWrapper} style={{ width: '90%', marginBottom: '4%' }}>
+            <Button size='small' type='primary' ghost onClick={this.addBigQ}>&emsp;创建大题&emsp;</Button>
+            <Button size='small' type='primary' ghost onClick={() => this.showModal('select')}>&emsp;从题库中选择&emsp;</Button>
+            <Button size='small' type='primary' ghost onClick={() => this.showModal('automatic')}>&emsp;自动组卷&emsp;</Button>
+            <Button size='small' type='primary' ghost onClick={() => this.showModal('template')}>&emsp;模板导入&emsp;</Button>
+          </div>
+          {/* 试题 */}
+            <div key={nanoid()} style={{width: '100%'}}>
+              <BigQ index={1} title="判断题" number={5} grade={10} isSave={true}
+                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
+              <JudgeQ index={1} title="目前使用的广域网基本都采用星型拓扑结构。" answer="false" grade={2} isSave={true}
+                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
+              <JudgeQ index={2} title="数据报服务是一种面向连接服务。" answer="false" grade={2} isSave={true}
+                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
+              <JudgeQ index={3} title="物理层需要完成的基本任务是封装成帧、透明传输、差错检测等。" answer="false" grade={2} isSave={true}
+                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
+              <JudgeQ index={4} title="数据链路不等同于链路，它是在链路基础上增加了控制传输的规程。" answer="true" grade={2} isSave={true}
+                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
+              <JudgeQ index={5} title="局域网具有结构简单、咸本低、速度快、可靠性高等优点。" answer="true" grade={2} isSave={true}
+                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
+
+              <BigQ index={2} title="选择题" number={5} grade={15} isSave={true}
+                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
+              <SingleQ index={1} title="采用异步传输方式，设数据位为7位，1位校验位，1位停止位，则其通信效率为（   ）" answer="B"
+                A="30%" B="70%" C="80%" D="20%" grade={3} isSave={true}/>
+              <SingleQ index={2} title="T1载波的数据传输率为（   ）" answer="D"
+                A="1Mbps" B="10Mbps" C="2.048Mbps" D="1.544Mbps" grade={3} isSave={true}/>
+              <SingleQ index={3} title="采用相位幅度调制PAM技术，可以提高数据传输速率，例如采用8种相位，每种相位取2种幅度值，可使一个码元表示的二进制数的位数为（   ）" answer="D"
+                A="2位" B="8位" C="16位" D="4位" grade={3} isSave={true}/>
+              <SingleQ index={4} title="若网络形状是由站点和连接站点的链路组成的一个闭合环，则称这种拓扑结构为（   ）" answer="C"
+                A="星形拓扑" B="总线拓扑" C="环形拓扑" D="树形拓扑" grade={3} isSave={true}/>
+              <SingleQ index={5} title="采用海明码纠正一位差错，若信息位为4位，则冗余位至少应为（   ）" answer="B"
+                A="2位" B="3位" C="5位" D="4位" grade={3} isSave={true}/>
+
+              <BigQ index={3} title="填空题" number={5} grade={20} isSave={true}
+                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
+              <BlankQ index={1} title="在SI体系结构中，PDU是由（   ）和（   ）两部分构成。" answer={["UD", "PCI"]} grade={4} isSave={true} />
+              <BlankQ index={2} title="衡量计算机网络性能的指标很多，但最主要的两个性能指标分别是（   ）和（   ）。" answer={["带宽", "时延"]} grade={4} isSave={true} />
+              <BlankQ index={3} title="RIP协议使用的（   ）算法，OSPF使用的是（   ）算法。" answer={["基于距离矢量", "最短路径优先"]} grade={4} isSave={true} />
+              <BlankQ index={4} title="DNS的主要功能有两个：一是确定网络主机域名的定义规则，二是将（   ）转换成（   ）。" answer={["域名", "实际IP地址"]} grade={4} isSave={true} />
+              <BlankQ index={5} title="使用FTP进行文件传输时，FTP的客户和服务器进程之间要建立两个连接，即（   ）和（   ）。" answer={["控制连接", "数据连接"]} grade={4} isSave={true} />
+
+              <BigQ index={4} title="连线题" number={5} grade={5} isSave={true}
+                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
+              <p style={{padding: "2% 5%"}}>备选项：A.地址解析协议&emsp;B.用户数据报协议&emsp;C.传输控制协议&emsp;D.外部网关协议&emsp;E.内部网关协议</p>
+              <ConnectQ index={1} title="UDP" answer="B" isSave={true} grade={1} />
+              <ConnectQ index={2} title="TCP" answer="C" isSave={true} grade={1} />
+              <ConnectQ index={3} title="ARP" answer="A" isSave={true} grade={1} />
+              <ConnectQ index={4} title="IGP" answer="E" isSave={true} grade={1} />
+              <ConnectQ index={5} title="BGP" answer="D" isSave={true} grade={1} />
+
+              <BigQ index={5} title="简答题" number={3} grade={30} isSave={true}
+                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
+              <ShortQ index={1} title="OSI七层模型包括哪些？" keyword="应用层；表示层；会话层；传输层；网络层；数据链路层；物理层" answer="OSI七层模型从上到下依次为：应用层；表示层；会话层；传输层；网络层；数据链路层；物理层" isSave={true} grade={10} />
+              <ShortQ index={2} title="简述CSMA技术的P—坚持算法规则。" keyword="" answer="(1)监听总线，如果总线空闲，则以P的概率发送，而以（1-P）的概率延迟一个时间单位（最大传播时延的2倍）；&#13;&#10;(2)延迟了一个时间单位后，再重复步骤(1)；&#13;&#10;(3)如果总线是忙的，继续监听直至总线空闲并重复步骤(1)。" isSave={true} grade={10} />
+              <ShortQ index={3} title="简述Novell NetWare对文件服务器的共享硬盘提供的5级可靠性措施。" keyword="" answer="(1)第一级：对硬盘目录和文件分配表（FAT）的保护；&#13;&#10;(2)第二级：对硬盘表面损坏时的数据保护；&#13;&#10;(3)第三级：采用磁盘镜像的方法实现对磁盘驱动器损坏的保护；&#13;&#10;(4)第四级：采用磁盘双工，对磁盘通道或磁盘驱动器损坏起到保护作用。&#13;&#10;(5)第五级：采用事务跟踪系统TTS的附加容错功能。" isSave={true} grade={10} />
+              
+              <BigQ index={6} title="计算题" number={1} grade={20} isSave={true}
+                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
+              <CalculateQ index={1} title="1.收发两端之间的传输距离为1000km，信号在媒体上的传播速率为2×108m/s。试计算以下两种情况的发送时延和传播时延：&#13;&#10;(1)数据长度为107bit，数据发送速率为100kb/s；&#13;&#10;(2)数据长度为103bit，数据发送速率为1Gb/s。"
+                answer="100s、0.005s；1μs、0.005s" process="(1)发送时延= 数据长度（比特）/ 发送速率（比特/每秒）= 107 / 100000 = 107 / 105 = 100s；&#13;&#10;传播时延= 信道长度（米）/ 信号在信道上的传播速率（米/每秒）= 106 / (2 × 108) = 0.005s；&#13;&#10;
+                  (2)发送时延= 数据长度（比特）/ 发送速率（比特/每秒）= 103/1000 000 000 = 103 / 109 = 1μs；&#13;&#10;传播时延= 信道长度（米）/ 信号在信道上的传播速率（米/每秒）= 106 / (2 × 108) = 0.005s。" isSave={true} grade={20} />
+            </div>
+        </div>
+        
+        : <div id='middle' className={BuildCss.middleWrapper} onClick={this.deleteShadow}>
           {/* 试卷头部 */}
           <Input id={BuildCss.title} placeholder="请输入试卷名称" bordered={false}
             style={{ fontSize: '1.5em', width: '100%', textAlign: 'center', color: '#181818', fontWeight: 'bold' }} />
@@ -649,7 +748,7 @@ export default class Build extends Component {
                 </div>
                 )
             })}
-        </div>
+        </div>}
 
         {/* 右列 */}
         <div className={BuildCss.rightWrapper}>
@@ -697,7 +796,7 @@ export default class Build extends Component {
             <Form.Item>
               <div className={BuildCss.lineWrapper} style={{ width: '100%', marginBottom: '4%', justifyContent: 'flex-end' }}>
                 <Button size='small' type="primary" htmlType="submit" style={{ lineHeight: '1.5em' }}
-                  onClick={this.finish}>&nbsp;完成创建&nbsp;</Button>
+                  onClick={this.finish}><Link to="/teacher/home">&nbsp;完成创建&nbsp;</Link></Button>
               </div>
             </Form.Item>
           </Form>

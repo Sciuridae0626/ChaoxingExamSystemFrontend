@@ -1,0 +1,33 @@
+/* 总父容器-无阴影 */
+.mainWrapper {
+    width: 100%;
+    height: auto;
+    padding: 2% 5%;
+}
+
+/* 总父容器-有阴影 */
+.mainWrapperShadow {
+    width: 100%;
+    height: auto;
+    padding: 2% 5%;
+    border-radius: 5px;
+    box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* 单行父容器 */
+.lineWrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* 单列父容器 */
+.columnWrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}

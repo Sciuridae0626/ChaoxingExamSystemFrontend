@@ -334,7 +334,8 @@ export default class Outline extends Component {
       content: '加载中...',
       key: 'updatable',
       style: {marginTop: '8.5vh'}
-    });
+    })
+    
     setTimeout(() => {
       if(this.state.selectedCourse === '信息管理') {
         const informationData = [

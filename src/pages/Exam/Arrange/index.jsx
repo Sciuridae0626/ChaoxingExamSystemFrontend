@@ -97,6 +97,11 @@ export default class Arrange extends Component {
     this.setState({ searchText: '' });
   }
 
+  /* 打印试卷的回调 */
+  exportPDF = () => {
+    window.open("https://api.sciuridae.xyz/download/【打印试卷】计算机网络 2021-2022-2期末A卷.pdf")
+  }
+
   render() {
     const columns = [
       {
@@ -152,7 +157,7 @@ export default class Arrange extends Component {
         key: 'edit',
         align: 'center',
         render: () => <div className={ArrangeCss.editButtonWrapper}>
-          <p id={ArrangeCss.exportPrinting}><MyIcon type='icon-daochudayin' />&nbsp;打印试卷</p>
+          <p id={ArrangeCss.exportPrinting} onClick={this.exportPDF}><MyIcon type='icon-daochudayin' />&nbsp;打印试卷</p>
           <p id={ArrangeCss.editAgain}><MyIcon type='icon-zaicibianji' />&nbsp;再次编辑</p>
           <p id={ArrangeCss.arrangement}><MyIcon type='icon-xiugaizhuangtai' />&nbsp;考场编排</p>
         </div>
@@ -192,7 +197,7 @@ export default class Arrange extends Component {
       {
         key: '4',
         number: 4,
-        subject: '计算机网络',
+        subject: '大学英语基础读写',
         date: '2021-12-25',
         time: '14:00-16:00',
         place: '教学楼A-111',
