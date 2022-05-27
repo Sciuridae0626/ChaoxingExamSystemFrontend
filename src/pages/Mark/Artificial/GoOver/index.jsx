@@ -504,6 +504,7 @@ export default class GoOver extends Component {
     
     /* 提交整卷的回调 */
     submit = () => {
+        this.props.history.goBack()
         message.success({
             content: '已成功提交整卷！',
             style: {marginTop: '8.5vh'}

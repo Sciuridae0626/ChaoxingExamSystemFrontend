@@ -9,18 +9,14 @@
     require "../../util/connectDatabase.php";
     $data = json_decode(file_get_contents('php://input'), true);
     $username = $data["username"];
-    $nicknameValue = $data["nicknameValue"];
-    $titleValue = $data["titleValue"];
-    $emailValue = $data["emailValue"];
-    $landlineValue = $data["landlineValue"];
-    $mobileValue = $data["mobileValue"];
-    $officeValue = $data["officeValue"];
-    $dormValue = $data["dormValue"];
-    $query = "UPDATE account SET username = '".$nicknameValue."', job_title = '".$titleValue."', email = '".$emailValue."', landline = '".$landlineValue."', telephone = '".$mobileValue."', office_address = '".$officeValue."', campus_address = '".$dormValue."' WHERE username = '".$username."';";
+    $nickname = $data["nickname"];
+    $belongSubject = $data["belongSubject"];
+    $sharingWay = $data["sharingWay"];
+    $query = "INSERT INTO que_library (que_name, que_course, que_count, share_status, que_id, landline_binding) VALUES ('".$nickname."', '".$belongSubject."', 0, '".$sharingWay."', '".$username."', '未绑定');";
     $queryMysqli = mysqli_query(connectDatabase(), $query);
     $verify = true;
     $result = [
         "verify" => $verify,
     ];
     echo json_encode($result);
-?> 
+?>

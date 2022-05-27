@@ -13,7 +13,7 @@
     $verify = false;
     $passwordSha256 = hash("sha256", $passwordValue);
     $query = "SELECT passwd FROM account WHERE username = '".$usernameValue."';";
-    $passwordMysqli = mysqli_fetch_array(mysqli_query(connectDatabase(), $query))[passwd];
+    $passwordMysqli = mysqli_fetch_array(mysqli_query(connectDatabase(), $query))['passwd'];
     if($passwordMysqli == $passwordSha256){
         $verify = true;
     }
