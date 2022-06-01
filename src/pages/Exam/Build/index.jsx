@@ -3,6 +3,7 @@ import { Button, Input, Divider, Form, Select, Radio, Modal, Upload, Cascader, m
 import Highlighter from 'react-highlight-words'
 import { nanoid } from 'nanoid'
 import { UploadOutlined, SearchOutlined } from '@ant-design/icons'
+import { exportWord } from 'mhtml-to-word'
 import { MyIcon } from '../../../assets/iconfont.js'
 import InfoTable from '../../../components/InfoTable'
 import BigQ from './components/BigQ'
@@ -493,6 +494,14 @@ export default class Build extends Component {
   /* 完成创建的回调 */
   finish = () => {
     if(window.confirm("已更新该卷考纲覆盖率和近三年重复率，是否确认完成创建？")){
+      // console.log(document.querySelector('.paper'))
+      // let blob = new Blob([document.querySelector('.paper')],{type:"application/msword;charset=utf-8"});
+      // saveAs(blob, "test.doc");
+      exportWord({
+        selector: ".paper",
+        style: "p{whiteSpace: 'nowrap';}",
+        filename: "exportTest"
+      })
       message.success({
           content: '创建成功！已提交管理员审核',
           style: {marginTop: '8.5vh'}
@@ -663,7 +672,7 @@ export default class Build extends Component {
             <Button size='small' type='primary' ghost onClick={() => this.showModal('template')}>&emsp;模板导入&emsp;</Button>
           </div>
           {/* 试题 */}
-            <div key={nanoid()} style={{width: '100%'}}>
+            <div key={nanoid()} style={{width: '100%'}} className="paper">
               <BigQ index={1} title="判断题" number={5} grade={10} isSave={true}
                 deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
               <JudgeQ index={1} title="目前使用的广域网基本都采用星型拓扑结构。" answer="false" grade={2} isSave={true}

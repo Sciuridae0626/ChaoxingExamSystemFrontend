@@ -250,7 +250,7 @@ export default class BlankQ extends Component {
             {/* 填空题题干行 */}
             <div className={BlankQCss.lineWrapper} style={{color: '#7B7B7B', justifyContent: 'space-between'}}>
                 <div className={BlankQCss.lineWrapper}> {this.props.index}.&emsp;
-                {this.props.isSave ? <p style={{color: '#1B1B1B'}}>{this.props.title}</p>
+                {this.props.isSave ? <nobr style={{color: '#1B1B1B'}}>{this.props.title}</nobr>
                 : <TextArea ref={ c => this.title = c } style={{ marginLeft: 10, marginRight: 20, resize: 'none' }}
                 value={this.state.value} autoSize onChange={this.onTextAreaChange} placeholder="请输入题干"
                 defaultValue={this.props.title} />}</div>
@@ -274,7 +274,7 @@ export default class BlankQ extends Component {
             {/* 设置行 */}
             <div className={BlankQCss.lineWrapper} style={{ justifyContent: 'space-between', marginTop: 20 }}>
                 <div className={BlankQCss.lineWrapper} style={{ width: '70%' }}>
-                    <p style={{width: '25%'}}>正确答案：</p>
+                    <nobr style={{width: '25%'}}>正确答案：</nobr>
                     {this.props.isSave ? 
                         this.props.answer.map((item) => {
                             return <Input style={{width: '30%', marginRight: '10px'}} value={item} disabled />
@@ -283,12 +283,12 @@ export default class BlankQ extends Component {
                         this.props.answer.map((item) => {
                             return <Input style={{width: '30%', marginRight: '10px'}} />
                         }) }
-                    {this.props.isSave ? '' : <p style={{color: '#7B7B7B', fontSize: 10}}>（ps：请选择以设置正确答案）</p>}
+                    {this.props.isSave ? '' : <nobr style={{color: '#7B7B7B', fontSize: 10}}>（ps：请选择以设置正确答案）</nobr>}
                 </div>
                 <div className={BlankQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
-                    <p style={{whiteSpace: 'nowrap'}}>分值：</p>{this.props.isSave ? <p>{this.props.grade}</p> 
+                    <nobr style={{whiteSpace: 'nowrap'}}>分值：</nobr>{this.props.isSave ? <nobr>{this.props.grade}</nobr> 
                     : <InputNumber ref={ c => this.grade = c } min={1} max={100}
-                        defaultValue={this.props.grade ? this.props.grade : ''} />}<p>&nbsp;分</p>
+                        defaultValue={this.props.grade ? this.props.grade : ''} />}<nobr>&nbsp;分</nobr>
                     {!this.props.isSave ? <Tooltip title="更多">
                         <Dropdown overlay={this.menu} placement="bottomLeft" arrow trigger='click'>
                         <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-gengduo' onClick={this.more} />
