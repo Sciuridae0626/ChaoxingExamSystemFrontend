@@ -18,7 +18,7 @@ export default class Share extends Component {
 
   /* 组件挂载完毕的钩子 */
   componentDidMount = () => {
-    axios.post('https://api.sciuridae.xyz/server/Bank/Share/share.php', {
+    axios.post('https://api.sciuridae.xyz/chaoxing/server/Bank/Share/share.php', {
     })
     .then(response => {
       this.setState({data: response.data})

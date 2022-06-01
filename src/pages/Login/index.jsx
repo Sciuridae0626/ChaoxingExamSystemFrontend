@@ -23,7 +23,7 @@ export default class Login extends Component {
     /* 单击登录按钮时的回调 */
     clickLogin = () => {
         if(this.state.loginFlag){
-            axios.post('https://api.sciuridae.xyz/server/Login/login.php', {
+            axios.post('https://api.sciuridae.xyz/chaoxing/server/Login/login.php', {
                 usernameValue: this.state.usernameValue,
                 passwordValue: this.state.passwordValue
             })

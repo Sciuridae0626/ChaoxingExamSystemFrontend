@@ -49,7 +49,7 @@ export default class Bank extends Component {
     /* 点击对话框确定按钮 */
     handleOk = () => {
         this.setState({isModalVisible: false})
-        axios.post('https://api.sciuridae.xyz/server/Bank/Create/createBank.php', {
+        axios.post('https://api.sciuridae.xyz/chaoxing/server/Bank/Create/createBank.php', {
             username: cookie.load("username"), //用户名
             nickname: this.state.nickname, //名称
             belongSubject: this.state.belongSubject, //课程

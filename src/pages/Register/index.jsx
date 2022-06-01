@@ -27,7 +27,7 @@ export default class Register extends Component {
         var ifLegal = regNumber.test(password) && regSmallString.test(password) && regBigString.test(password)
         if(this.state.password === this.state.verify && ifLegal){
             if(this.state.loginFlag){
-                axios.post('https://api.sciuridae.xyz/server/Login/register.php', {
+                axios.post('https://api.sciuridae.xyz/chaoxing/server/Login/register.php', {
                     username: this.state.username,
                     password: this.state.password,
                     name: this.state.name,

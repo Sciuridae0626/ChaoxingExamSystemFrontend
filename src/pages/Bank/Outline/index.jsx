@@ -712,7 +712,7 @@ export default class Outline extends Component {
 
   /* 导出考纲文件的回调 */
   exportPDF = () => {
-    window.open("https://api.sciuridae.xyz/download/《信息管理》考纲.pdf")
+    window.open("https://api.sciuridae.xyz/chaoxing/download/《信息管理》考纲.pdf")
   }
   
   render() {

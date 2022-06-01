@@ -10,7 +10,7 @@ export default class Statistics extends Component {
   render() {
     return (
       <div className="statisticsContainer">
-        <img id='formula' src='http://api.sciuridae.xyz/image/Statistics/formula.png' alt="计算公式" style={{height: '20px'}} />
+        <img id='formula' src='https://api.sciuridae.xyz/chaoxing/image/Statistics/formula.png' alt="计算公式" style={{height: '20px'}} />
         <Tabs type="card">
           <TabPane tab="任课成绩" key="1">
               <Teach />

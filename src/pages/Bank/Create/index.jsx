@@ -132,7 +132,7 @@ export default class Create extends Component {
 
   /* 组件挂载完毕的钩子 */
   componentDidMount = () => {
-    axios.post('https://api.sciuridae.xyz/server/Bank/Create/create.php', {
+    axios.post('https://api.sciuridae.xyz/chaoxing/server/Bank/Create/create.php', {
       username: cookie.load("username") //用户名
     })
     .then(response => {

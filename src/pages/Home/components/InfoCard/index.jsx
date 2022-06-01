@@ -21,7 +21,7 @@ export default class InfoCard extends Component {
 
     /* 组件挂载完毕的钩子 */
     componentDidMount = () => {
-        axios.post("https://api.sciuridae.xyz/server/Home/InfoCard/userInfo.php", {
+        axios.post("https://api.sciuridae.xyz/chaoxing/server/Home/InfoCard/userInfo.php", {
             username: cookie.load("username")
         })
         .then(
@@ -59,7 +59,7 @@ export default class InfoCard extends Component {
 
     /* 点击对话框确定按钮 */
     handleOk = () => {
-        axios.post("https://api.sciuridae.xyz/server/Home/InfoCard/updateUserInfo.php", {
+        axios.post("https://api.sciuridae.xyz/chaoxing/server/Home/InfoCard/updateUserInfo.php", {
             username: cookie.load("username"),
             nicknameValue: this.state.nicknameValue,
             titleValue: this.state.titleValue,
@@ -143,7 +143,7 @@ export default class InfoCard extends Component {
                 </div>
                 {/* 详细信息部分 */}
                 <div className={InfoCardCss.detailInfo}>
-                    <img id={InfoCardCss.modify} src='http://api.sciuridae.xyz/image/Home/modify.png'
+                    <img id={InfoCardCss.modify} src='https://api.sciuridae.xyz/chaoxing/image/Home/modify.png'
                         alt='修改信息' onClick={this.showModal}></img>
                     <div className={InfoCardCss.infoContent}>
                         <p> 职称：{userInfo.title} </p>

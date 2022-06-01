@@ -142,7 +142,7 @@ export default class Manage extends Component {
     else if(type === 'user') {
       if(this.state.password === this.state.verify){
         if(this.state.loginFlag){
-          axios.post('https://api.sciuridae.xyz/server/Login/register.php', {
+          axios.post('https://api.sciuridae.xyz/chaoxing/server/Login/register.php', {
               username: this.state.username,
               password: this.state.password,
               name: this.state.name,

@@ -17,7 +17,7 @@ export default class Reference extends Component {
 
   clickSearch = () => {
     this.setState({loading: true})
-    axios.post('https://api.sciuridae.xyz/server/Bank/Reference/referenceData.php', {
+    axios.post('https://api.sciuridae.xyz/chaoxing/server/Bank/Reference/referenceData.php', {
       nameValue: this.state.nameValue
     })
     .then(response => {

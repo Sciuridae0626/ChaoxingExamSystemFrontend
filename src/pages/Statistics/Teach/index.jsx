@@ -109,13 +109,13 @@ export default class Teach extends Component {
 
   /* 下载试卷分析的回调 */
   downloadPDF = () => {
-    // window.open("https://api.sciuridae.xyz/download/计算机网络期末考试A卷试卷分析-2022年5月.docx")
-    window.open("https://api.sciuridae.xyz/download/计算机网络期末考试A卷试卷分析-2022年5月.pdf")
+    // window.open("https://api.sciuridae.xyz/chaoxing/download/计算机网络期末考试A卷试卷分析-2022年5月.docx")
+    window.open("https://api.sciuridae.xyz/chaoxing/download/计算机网络期末考试A卷试卷分析-2022年5月.pdf")
   }
 
   /* 导出成绩单的回调 */
   exportExcel = () => {
-    window.open("https://api.sciuridae.xyz/download/计算机网络期末考试A卷成绩单-2022年5月.xlsx")
+    window.open("https://api.sciuridae.xyz/chaoxing/download/计算机网络期末考试A卷成绩单-2022年5月.xlsx")
   }
 
   render() {

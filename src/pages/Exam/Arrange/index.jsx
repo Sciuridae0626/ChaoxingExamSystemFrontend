@@ -99,7 +99,7 @@ export default class Arrange extends Component {
 
   /* 打印试卷的回调 */
   exportPDF = () => {
-    window.open("https://api.sciuridae.xyz/download/【打印试卷】计算机网络 2021-2022-2期末A卷.pdf")
+    window.open("https://api.sciuridae.xyz/chaoxing/download/【打印试卷】计算机网络 2021-2022-2期末A卷.pdf")
   }
 
   render() {
