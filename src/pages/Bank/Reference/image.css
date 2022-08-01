@@ -1,0 +1,15 @@
+.ant-image-preview-wrap {
+    z-index: 99999999999 !important;
+}
+
+.ant-image-preview-operations {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.ant-image-preview-switch-right {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.ant-image-preview-switch-left {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}

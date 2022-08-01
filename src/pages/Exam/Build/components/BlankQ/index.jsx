@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Input, Tooltip, InputNumber, Dropdown, Menu, Cascader, Modal, Form, Select, message, Upload } from 'antd'
-import { PlusOutlined, InboxOutlined  } from '@ant-design/icons'
+import { Input, Tooltip, InputNumber, Dropdown, Menu, Cascader, Modal, Form, Select, message, Upload, Button, Image } from 'antd'
+import { PlusOutlined, InboxOutlined, UploadOutlined  } from '@ant-design/icons'
 import { nanoid } from 'nanoid'
 import { MyIcon } from '../../../../../assets/iconfont.js'
 import BlankQCss from './index.module.css'
@@ -12,9 +12,10 @@ const { Dragger } = Upload;
 
 export default class BlankQ extends Component {
 
-    state = { textArea: '', radioValue: '', analysisArea: '',
+    state = { textArea: '', analysisArea: '',
       isAutomaticVisible: false, isAnalysisVisible: false,
       previewVisible: false, previewImage: '', previewTitle: '',
+      answerList: [], picURL: '', picFileList: [], haveUpload: false,
       fileList: [
         {
           uid: '-1',
@@ -214,6 +215,114 @@ export default class BlankQ extends Component {
       </Menu>
     )
 
+    /* 组件挂载完毕的钩子 */
+    componentDidMount = () => {
+      if(!this.props.isSave) this.title.focus()
+      this.setState({
+        answerList: this.props.answer,
+        picURL: this.props.picURL,
+        picFileList: [{uid: nanoid(), url: this.props.picURL}]
+      })
+    }
+  
+    /* 文本域发生变化时的回调 */
+    onTextAreaChange = ({ target: { value } }) => {
+      this.setState({textArea: value});
+    }
+    /* 答案空格发生变化时的回调 */
+    onBlankChange = (event, id) => {
+      let answer = this.state.answerList
+      let newAnswer = answer.map((item) => {
+        if(id === item.id) {
+          setTimeout(() => {
+            item.text = event.target.defaultValue
+          }, 10)          
+        }
+        return item
+      })
+      this.setState({answerList: newAnswer})
+    }
+    /* 选项文本框发生变化时的回调 */
+    onInputChange = (event, id) => {
+      let option = this.state.optionList
+      let newOption = option.map((item) => {
+        if(item.id === id) item.text = event.target.value
+        return item
+      })
+      this.setState({optionList: newOption})
+    }
+    /* 上传文件发生变化时的回调 */
+    onUpLoadChange = (event) => {
+      this.setState({picURL: event.file.thumbUrl})
+    }
+    
+    /* 执行删除小题的回调 */
+    handleDelete = (id) => {
+      if(window.confirm(`确定删除第${this.props.index}小题吗？`)){
+        this.props.deleteBlankQ(id)
+      }
+    }
+    /* 执行保存小题的回调 */
+    handleSave = (id) => {
+      let title = this.title.resizableTextArea.props.value
+      let pic
+      if(this.state.haveUpload) pic = 'true'
+      else pic = this.state.picURL
+      let answer = this.state.answerList
+      let grade = this.grade.value
+      this.props.saveBlankQ(id, title, pic, answer, grade)
+    }
+    /* 执行编辑小题的回调 */
+    handleEdit = (id) => {
+      this.props.editBlankQ(id)
+    }
+  
+    /* 点击更多按钮的回调 */
+    more = () => {
+      // console.log('more')
+    }
+    
+    /* 上传题干图片按钮的回调 */
+    upload = () => {
+      this.setState({haveUpload: true})
+    }
+    /* 增加答案空格的回调 */
+    addBlank = () => {
+      let answer = this.state.answerList
+      answer.push({id: answer.length+1, text: ''})
+      this.setState({answerList: answer})
+    }
+    /* 删除空白空格的回调 */
+    deleteBlank = () => {
+      let answer = this.state.answerList
+      let newAnswer = answer.filter((answerObj) => {
+        return answerObj.text !== ''
+      })
+      this.setState({answerList: newAnswer})
+    }
+  
+    /* 上传图片解析的相关函数 */
+    getBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      })
+    }
+    handlePreview = async file => {
+      if (!file.url && !file.preview) {
+        file.preview = await this.getBase64(file.originFileObj);
+      }
+      this.setState({
+        previewImage: file.url || file.preview,
+        previewVisible: true,
+        previewTitle: file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
+      });
+    }
+    handlePicCancel = () => this.setState({ previewVisible: false })
+    handleChange = ({ fileList }) => this.setState({ fileList })
+
     render() {
         const { isAnalysisVisible, isAutomaticVisible} = this.state
 
@@ -248,53 +357,67 @@ export default class BlankQ extends Component {
 
         return (<div className={this.props.isSave ? BlankQCss.mainWrapper : BlankQCss.mainWrapperShadow}>
             {/* 填空题题干行 */}
-            <div className={BlankQCss.lineWrapper} style={{color: '#7B7B7B', justifyContent: 'space-between'}}>
-                <div className={BlankQCss.lineWrapper}> {this.props.index}.&emsp;
-                {this.props.isSave ? <nobr style={{color: '#1B1B1B'}}>{this.props.title}</nobr>
-                : <TextArea ref={ c => this.title = c } style={{ marginLeft: 10, marginRight: 20, resize: 'none' }}
+            <div className={BlankQCss.lineWrapper} style={{color: '#7B7B7B', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+              <div className={BlankQCss.lineWrapper} style={{alignItems: 'flex-start'}}> {this.props.index}.&emsp;
+              {this.props.isSave ? <div style={{color: '#1B1B1B', wordBreak: 'break-all'}} onClick={() => {this.handleEdit(this.props.id)}}>{this.props.title}</div>
+              : <TextArea ref={ c => this.title = c } style={{ marginLeft: 10, marginRight: 20, resize: 'none' }}
                 value={this.state.value} autoSize onChange={this.onTextAreaChange} placeholder="请输入题干"
                 defaultValue={this.props.title} />}</div>
-                {/* 右上角按钮组 */}
-                <div className={BlankQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
-                {this.props.index > 1 ? <Tooltip title="上移">
-                    <MyIcon style={{ marginRight: '5%', cursor: 'pointer' }} type='icon-shangyi' />
-                    </Tooltip> : ''}
-                <Tooltip title="下移"><MyIcon style={{ marginRight: '5%', cursor: 'pointer' }} type='icon-xiayi' /></Tooltip>
-                <Tooltip title="删除"><MyIcon style={{ cursor: 'pointer' }} type='icon-shanchu'
-                    onClick={() => {this.handleDelete(this.props.id)}} /></Tooltip>
-                {!this.props.isSave ? <Tooltip title="保存">
-                    <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-baocun'
-                    onClick={() => {this.handleSave(this.props.id)}} />
-                    </Tooltip> : <Tooltip title="编辑">
-                    <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-xiugaichengji'
-                    onClick={() => {this.handleEdit(this.props.id)}} />
-                    </Tooltip>}
-                </div>
+              {/* 右上角按钮组 */}
+              <div className={BlankQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
+              {this.props.index > 1 ? <Tooltip title="上移">
+                <MyIcon style={{ marginRight: '5%', cursor: 'pointer' }} type='icon-shangyi' />
+                </Tooltip> : ''}
+              <Tooltip title="下移"><MyIcon style={{ marginRight: '5%', cursor: 'pointer' }} type='icon-xiayi' /></Tooltip>
+              <Tooltip title="删除"><MyIcon style={{ cursor: 'pointer' }} type='icon-shanchu'
+                  onClick={() => {this.handleDelete(this.props.id)}} /></Tooltip>
+              {!this.props.isSave ? <Tooltip title="保存">
+                <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-baocun'
+                onClick={() => {this.handleSave(this.props.id)}} />
+                </Tooltip> : <Tooltip title="编辑">
+                <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-xiugaichengji'
+                onClick={() => {this.handleEdit(this.props.id)}} />
+                </Tooltip>}
+              </div>
             </div>
             {/* 设置行 */}
-            <div className={BlankQCss.lineWrapper} style={{ justifyContent: 'space-between', marginTop: 20 }}>
-                <div className={BlankQCss.lineWrapper} style={{ width: '70%' }}>
-                    <nobr style={{width: '25%'}}>正确答案：</nobr>
-                    {this.props.isSave ? 
-                        this.props.answer.map((item) => {
-                            return <Input style={{width: '30%', marginRight: '10px'}} value={item} disabled />
-                        })
-                        : 
-                        this.props.answer.map((item) => {
-                            return <Input style={{width: '30%', marginRight: '10px'}} />
-                        }) }
-                    {this.props.isSave ? '' : <nobr style={{color: '#7B7B7B', fontSize: 10}}>（ps：请选择以设置正确答案）</nobr>}
+            <div className={BlankQCss.lineWrapper} style={{ justifyContent: 'space-between', marginTop: 20, alignItems: 'flex-end' }}>
+              <div className={BlankQCss.columnWrapper} style={{ width: '70%' }}>
+                {this.props.isSave ? <div className={BlankQCss.columnWrapper} style={{marginTop: '-0.5em'}}>
+                  {this.props.picURL ? <Image width={100} style={{marginBottom: '0.5em'}}
+                    src="https://api.sciuridae.xyz/chaoxing/image/Course/computerNetwork.png" /> : ''}
+                  <div className={BlankQCss.lineWrapper}><nobr style={{marginTop: '0.5em'}}>正确答案：</nobr>
+                  {this.state.answerList.length ? this.state.answerList.map((item, index) => {
+                      return index ? <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>，{item.text}</nobr>
+                        : <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>{item.text}</nobr>
+                    }) : <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>无</nobr> }</div>
                 </div>
-                <div className={BlankQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
-                    <nobr style={{whiteSpace: 'nowrap'}}>分值：</nobr>{this.props.isSave ? <nobr>{this.props.grade}</nobr> 
-                    : <InputNumber ref={ c => this.grade = c } min={1} max={100}
-                        defaultValue={this.props.grade ? this.props.grade : ''} />}<nobr>&nbsp;分</nobr>
-                    {!this.props.isSave ? <Tooltip title="更多">
-                        <Dropdown overlay={this.menu} placement="bottomLeft" arrow trigger='click'>
-                        <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-gengduo' onClick={this.more} />
-                        </Dropdown>
-                    </Tooltip> : ''}
-                </div>
+                : <div>
+                  <Upload maxCount={1} action="https://www.mocky.io/v2/5cc8019d300000980a055e76" listType="picture" onChange={this.onUpLoadChange} defaultFileList={[...this.state.picFileList]}>
+                    <Button onClick={this.upload} icon={<UploadOutlined />}>上传题干图片</Button>
+                  </Upload>
+                  <div className={BlankQCss.lineWrapper}>
+                    <nobr style={{display: 'block', marginTop: '1em'}}>正确答案：</nobr>
+                    <Button onClick={this.addBlank} size='small' type='primary' ghost style={{marginTop: '1em', marginRight: '1em'}}>增加答案空格</Button>
+                    <Button onClick={this.deleteBlank} size='small' danger ghost style={{marginTop: '1em'}}>删除空白空格</Button>
+                  </div>
+                  {this.state.answerList.map((item) => {
+                      return <Input key={`blank_answer${item.id}`} onChange={(event)=>this.onBlankChange(event, item.id)} defaultValue={item.text}
+                        style={{width: '30%', marginRight: '10px', marginTop: '0.5em'}} />
+                    })}
+                </div>}
+                {this.props.isSave ? '' : <nobr style={{color: '#7B7B7B', fontSize: 10, marginTop: '1em'}}>（ps：请填写以设置正确答案）</nobr>}
+              </div>
+              <div className={BlankQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
+                <nobr style={{whiteSpace: 'nowrap'}}>分值：</nobr>{this.props.isSave ? <nobr onClick={() => {this.handleEdit(this.props.id)}}>{this.props.grade}</nobr> 
+                  : <InputNumber ref={ c => this.grade = c } min={1} max={100}
+                      defaultValue={this.props.grade ? this.props.grade : 0} />}<nobr>&nbsp;分</nobr>
+                  {!this.props.isSave ? <Tooltip title="更多">
+                    <Dropdown overlay={this.menu} placement="bottomLeft" arrow trigger='click'>
+                    <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-gengduo' onClick={this.more} />
+                    </Dropdown>
+                  </Tooltip> : ''}
+              </div>
             </div>
             
             {/* 录入解析对话框 */}

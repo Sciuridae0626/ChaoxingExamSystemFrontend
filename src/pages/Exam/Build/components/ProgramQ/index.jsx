@@ -1,21 +1,22 @@
 import React, { Component } from 'react'
-import { Input, Tooltip, InputNumber, Dropdown, Menu, Cascader, Modal, Form, Select, message, Upload, Button } from 'antd'
-import { PlusOutlined, InboxOutlined } from '@ant-design/icons'
+import { Input, Tooltip, InputNumber, Dropdown, Menu, Cascader, Modal, Form, Select, message, Upload, Button, Image } from 'antd'
+import { PlusOutlined, InboxOutlined, UploadOutlined } from '@ant-design/icons'
 import { nanoid } from 'nanoid'
 import { MyIcon } from '../../../../../assets/iconfont.js'
-import ConnectQCss from './index.module.css'
+import ProgramQCss from './index.module.css'
 
 const { TextArea } = Input
 const { SubMenu } = Menu
 const { Option } = Select
 const { Dragger } = Upload
 
-export default class ConnectQ extends Component {
+export default class ProgramQ extends Component {
 
-  state = { textArea: '', analysisArea: '',
+  state = { textArea: '', analysisArea: '', timeUnit: 'ms', spaceUnit: 'KB',
     isAutomaticVisible: false, isAnalysisVisible: false,
     previewVisible: false, previewImage: '', previewTitle: '',
-    answerList: [], picFileList: [],
+    inputExplain: '', outputExplain: '', timeLimit: 5000, spaceLimit: 20000,
+    exampleList: [], picURL: '', picFileList: [], haveUpload: false,
     fileList: [
       {
         uid: '-1',
@@ -217,35 +218,50 @@ export default class ConnectQ extends Component {
   componentDidMount = () => {
     if(!this.props.isSave) this.title.focus()
     this.setState({
-      answerList: this.props.answer,
       picURL: this.props.picURL,
+      inputExplain: this.props.inputExplain,
+      outputExplain: this.props.outputExplain,
+      exampleList: this.props.example,
+      timeLimit: this.props.timeLimit,
+      spaceLimit: this.props.spaceLimit,
+      timeUnit: this.props.timeUnit,
+      spaceUnit: this.props.spaceUnit,
       picFileList: [{uid: nanoid(), url: this.props.picURL}]
     })
   }
 
   /* 文本域发生变化时的回调 */
-  onTextAreaChange = ({ target: { value } }) => {
-    this.setState({textArea: value});
+  onTextAreaChange = (event, type) => {
+    if(type === 'input'){
+      setTimeout(() => {
+        this.setState({inputExplain: event.target.innerHTML})
+      }, 10)
+    }
+    else {
+      setTimeout(() => {
+        this.setState({outputExplain: event.target.innerHTML})
+      }, 10)
+    }
   }
   /* 匹配项空格发生变化时的回调 */
   onBlankChange = (event, id, type) => {
-    let answer = this.state.answerList
-    let newAnswer = answer.map((item) => {
+    let example = this.state.exampleList
+    let newExample = example.map((item) => {
       if(id === item.id) {
-        if(type === 'key'){
+        if(type === 'input'){
           setTimeout(() => {
-            item.key = event.target.defaultValue
+            item.input = event.target.defaultValue
           }, 10)
         }
         else {
           setTimeout(() => {
-            item.value = event.target.defaultValue
+            item.output = event.target.defaultValue
           }, 10)
         }
       }
       return item
     })
-    this.setState({answerList: newAnswer})
+    this.setState({exampleList: newExample})
   }
   /* 选项文本框发生变化时的回调 */
   onInputChange = (event, id) => {
@@ -260,23 +276,37 @@ export default class ConnectQ extends Component {
   onUpLoadChange = (event) => {
     this.setState({picURL: event.file.thumbUrl})
   }
+  /* 单位选择器文本框值发生变化时的回调 */
+  onUnitChange = (value, type) => {
+    if(type === 'time') this.setState({timeUnit: value})
+    else this.setState({spaceUnit: value})
+  }
   
   /* 执行删除小题的回调 */
   handleDelete = (id) => {
     if(window.confirm(`确定删除第${this.props.index}小题吗？`)){
-      this.props.deleteConnectQ(id)
+      this.props.deleteProgramQ(id)
     }
   }
   /* 执行保存小题的回调 */
   handleSave = (id) => {
     let title = this.title.resizableTextArea.props.value
-    let answer = this.state.answerList
+    let pic
+    if(this.state.haveUpload) pic = 'true'
+    else pic = this.state.picURL
+    let input = this.state.inputExplain
+    let output = this.state.outputExplain
+    let example = this.state.exampleList
+    let timeLimit = this.timeLimit.value
+    let spaceLimit = this.spaceLimit.value
+    let timeUnit = this.state.timeUnit
+    let spaceUnit = this.state.spaceUnit
     let grade = this.grade.value
-    this.props.saveConnectQ(id, title, answer, grade)
+    this.props.saveProgramQ(id, title, pic, input, output, example, timeLimit, spaceLimit, timeUnit, spaceUnit, grade)
   }
   /* 执行编辑小题的回调 */
   handleEdit = (id) => {
-    this.props.editConnectQ(id)
+    this.props.editProgramQ(id)
   }
 
   /* 点击更多按钮的回调 */
@@ -290,17 +320,17 @@ export default class ConnectQ extends Component {
   }
   /* 增加匹配组空格的回调 */
   addBlank = () => {
-    let answer = this.state.answerList
-    answer.push({id: answer.length+1, key: '', value: ''})
-    this.setState({answerList: answer})
+    let example = this.state.exampleList
+    example.push({id: example.length+1, input: '', output: ''})
+    this.setState({exampleList: example})
   }
   /* 删除空白匹配组的回调 */
   deleteBlank = () => {
-    let answer = this.state.answerList
-    let newAnswer = answer.filter((answerObj) => {
-      return answerObj.key !== '' && answerObj.value !== ''
+    let example = this.state.exampleList
+    let newExample = example.filter((exampleObj) => {
+      return exampleObj.input !== '' && exampleObj.output !== ''
     })
-    this.setState({answerList: newAnswer})
+    this.setState({exampleList: newExample})
   }
 
   /* 上传图片解析的相关函数 */
@@ -355,17 +385,33 @@ export default class ConnectQ extends Component {
         console.log('Dropped files', e.dataTransfer.files);
         },
     }
+    /* 时间复杂度后缀 */
+    const timeSelectAfter = (
+      <Select defaultValue={this.props.timeUnit} style={{ width: 60 }} onChange={(value)=>this.onUnitChange(value, 'time')}>
+        <Option value="μs">μs</Option>
+        <Option value="ms">ms</Option>
+        <Option value="s">s</Option>
+      </Select>
+    )
+    /* 空间复杂度后缀 */
+    const spaceSelectAfter = (
+      <Select defaultValue={this.props.spaceUnit} style={{ width: 60 }} onChange={(value)=>this.onUnitChange(value, 'space')}>
+        <Option value="bit">bit</Option>
+        <Option value="B">B</Option>
+        <Option value="KB">KB</Option>
+        <Option value="MB">MB</Option>
+      </Select>
+    )
 
-    return (<div className={this.props.isSave ? ConnectQCss.mainWrapper : ConnectQCss.mainWrapperShadow}>
-      {/* 连线题题干行 */}
-      <div className={ConnectQCss.lineWrapper} style={{color: '#7B7B7B', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-        <div className={ConnectQCss.lineWrapper} style={{alignItems: 'flex-start'}}> {this.props.index}.&emsp;
+    return (<div className={this.props.isSave ? ProgramQCss.mainWrapper : ProgramQCss.mainWrapperShadow}>
+      {/* 程序题题干行 */}
+      <div className={ProgramQCss.lineWrapper} style={{color: '#7B7B7B', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+        <div className={ProgramQCss.lineWrapper} style={{alignItems: 'flex-start'}}> {this.props.index}.&emsp;
           {this.props.isSave ? <div style={{color: '#1B1B1B', wordBreak: 'break-all'}} onClick={() => {this.handleEdit(this.props.id)}}>{this.props.title}</div>
-          : <TextArea ref={ c => this.title = c } style={{ marginLeft: 10, marginRight: 20, resize: 'none' }}
-          value={this.state.value} autoSize onChange={this.onTextAreaChange} placeholder="请输入题干"
+          : <TextArea ref={ c => this.title = c } style={{ marginLeft: 10, marginRight: 20, resize: 'none' }} autoSize placeholder="请输入题干"
           defaultValue={this.props.title} />}</div>
           {/* 右上角按钮组 */}
-          <div className={ConnectQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
+          <div className={ProgramQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
           {this.props.index > 1 ? <Tooltip title="上移">
               <MyIcon style={{ marginRight: '5%', cursor: 'pointer' }} type='icon-shangyi' />
               </Tooltip> : ''}
@@ -382,38 +428,84 @@ export default class ConnectQ extends Component {
           </div>
       </div>
       {/* 设置行 */}
-      <div className={ConnectQCss.lineWrapper} style={{ justifyContent: 'space-between', marginTop: 20, alignItems: 'flex-end' }}>
-      <div className={ConnectQCss.columnWrapper} style={{ width: '70%' }}>
-        {this.props.isSave ? <div className={ConnectQCss.columnWrapper} style={{marginTop: '-0.5em'}}>
-          <div className={ConnectQCss.columnWrapper}><nobr>匹配项：</nobr>
-          {this.state.answerList.length ? this.state.answerList.map((item, index) => {
-            return <div className={ConnectQCss.lineWrapper}>
-              <nobr style={{marginTop: '0.5em'}}>第{index+1}组：</nobr>
-              <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>{item.key}</nobr>
-              <nobr style={{marginTop: '0.5em'}}>&emsp;——&emsp;</nobr>
-              <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>{item.value}</nobr>
-            </div>})
-          : <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>无</nobr> }</div>
+      <div className={ProgramQCss.lineWrapper} style={{ justifyContent: 'space-between', marginTop: 20, alignItems: 'flex-end' }}>
+        <div className={ProgramQCss.columnWrapper} style={{ width: '70%' }}>
+          {this.props.isSave ? <div className={ProgramQCss.columnWrapper} style={{marginTop: '-0.5em'}}>
+            {this.props.picURL ? <Image width={100} style={{marginBottom: '0.5em'}}
+              src="https://api.sciuridae.xyz/chaoxing/image/Course/computerNetwork.png" /> : ''}
+            <div className={ProgramQCss.lineWrapper} style={{marginTop: '1em'}}>
+              <nobr style={{display: 'block'}}>输入说明：</nobr>
+              {this.state.inputExplain === '' ? <nobr>无</nobr>
+                : <div style={{wordBreak: 'break-all'}} onClick={() => {this.handleEdit(this.props.id)}}>{this.props.inputExplain}</div>}
+            </div>
+            <div className={ProgramQCss.lineWrapper} style={{marginTop: '0.5em'}}>
+              <nobr style={{display: 'block'}}>输出说明：</nobr>
+              {this.state.outputExplain === '' ? <nobr>无</nobr>
+                : <div style={{wordBreak: 'break-all'}} onClick={() => {this.handleEdit(this.props.id)}}>{this.props.outputExplain}</div>}
+            </div>
+            {this.state.exampleList.length ? 
+              <div className={ProgramQCss.columnWrapper}>
+                <nobr style={{marginTop: '0.5em'}}>测试用例：</nobr>
+                {this.state.exampleList.map((item, index) => {
+                  return <div className={ProgramQCss.lineWrapper} style={{marginTop: '0.5em'}}>
+                    <nobr>输入：</nobr>
+                    <nobr onClick={() => {this.handleEdit(this.props.id)}}>
+                      {item.input ? `${item.input}，` : '/ ，'}
+                    </nobr>
+                    <nobr>输出：</nobr>
+                    <nobr onClick={() => {this.handleEdit(this.props.id)}}>
+                      {item.output ? `${item.output}` : '/ '}
+                      {index === this.state.exampleList.length-1 ? '。': '；'}
+                    </nobr>
+                  </div>})}
+              </div>
+            : <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>测试用例：无</nobr> }
+            <nobr style={{marginTop: '1em'}} onClick={() => {this.handleEdit(this.props.id)}}>
+              时间限制（运行时长上限）：{this.state.timeLimit}{this.state.timeUnit}</nobr>
+            <nobr style={{marginTop: '0.5em'}} onClick={() => {this.handleEdit(this.props.id)}}>
+              空间限制（占用内存上限）：{this.state.spaceLimit}{this.state.spaceUnit}</nobr>
           </div>
           : <div>
-            <div className={ConnectQCss.lineWrapper}>
-              <nobr style={{display: 'block'}}>匹配项：</nobr>
-              <Button onClick={this.addBlank} size='small' type='primary' ghost style={{marginRight: '1em'}}>增加匹配组</Button>
-              <Button onClick={this.deleteBlank} size='small' danger ghost>删除空白匹配组</Button>
+            <Upload maxCount={1} action="https://www.mocky.io/v2/5cc8019d300000980a055e76" listType="picture" onChange={this.onUpLoadChange} defaultFileList={[...this.state.picFileList]}>
+              <Button onClick={this.upload} icon={<UploadOutlined />}>上传题干图片</Button>
+            </Upload>
+            <div className={ProgramQCss.lineWrapper} style={{marginTop: '1em'}}>
+              <nobr style={{display: 'block'}}>输入说明：</nobr>
+              <TextArea style={{ resize: 'none' }} onChange={(event)=>this.onTextAreaChange(event,'input')}
+                autoSize defaultValue={this.props.inputExplain} />
             </div>
-            {this.state.answerList.map((item, index) => {
-                return <div key={`connect_answer${item.id}`} className={ConnectQCss.lineWrapper} style={{marginTop: '0.5em'}}>
-                  <nobr>第{index+1}组：</nobr>
-                  <Input onChange={(event)=>this.onBlankChange(event, item.id, 'key')}
-                    defaultValue={item.key} style={{width: '40%', marginRight: '10px'}} />
-                  <Input onChange={(event)=>this.onBlankChange(event, item.id, 'value')}
-                    defaultValue={item.value} style={{width: '40%'}} />
-                </div>
-              })}
+            <div className={ProgramQCss.lineWrapper} style={{marginTop: '0.5em'}}>
+              <nobr style={{display: 'block'}}>输出说明：</nobr>
+              <TextArea style={{ resize: 'none' }} onChange={(event)=>this.onTextAreaChange(event,'output')}
+                autoSize defaultValue={this.props.outputExplain} />
+            </div>
+            <div className={ProgramQCss.lineWrapper} style={{marginTop: '1em'}}>
+              <nobr style={{display: 'block'}}>测试用例：</nobr>
+              <Button onClick={this.addBlank} size='small' type='primary' ghost style={{marginRight: '1em'}}>增加用例组</Button>
+              <Button onClick={this.deleteBlank} size='small' danger ghost>删除空白用例组</Button>
+            </div>
+            {this.state.exampleList.map((item) => {
+              return <div key={`connect_example${item.id}`} className={ProgramQCss.lineWrapper} style={{marginTop: '0.5em'}}>
+                <nobr>输入：</nobr>
+                <Input onChange={(event)=>this.onBlankChange(event, item.id, 'input')}
+                  defaultValue={item.input} style={{width: '40%', marginRight: '10px'}} />
+                <nobr>输出：</nobr>
+                <Input onChange={(event)=>this.onBlankChange(event, item.id, 'output')}
+                  defaultValue={item.output} style={{width: '40%'}} />
+              </div>
+            })}
+            <div className={ProgramQCss.lineWrapper} style={{marginTop: '1em'}}>
+              <nobr>时间限制（运行时长上限）：</nobr>
+              <InputNumber ref={ c => this.timeLimit = c } addonAfter={timeSelectAfter} defaultValue={this.props.timeLimit} />
+            </div>
+            <div className={ProgramQCss.lineWrapper} style={{marginTop: '0.5em'}}>
+              <nobr>空间限制（占用内存上限）：</nobr>
+              <InputNumber ref={ c => this.spaceLimit = c } addonAfter={spaceSelectAfter} defaultValue={this.props.spaceLimit} />
+            </div>
           </div>}
-          {this.props.isSave ? '' : <nobr style={{color: '#7B7B7B', fontSize: 10, marginTop: '1em'}}>（ps：请填写以设置正确答案）</nobr>}
+          {this.props.isSave ? '' : <nobr style={{color: '#7B7B7B', fontSize: 10, marginTop: '1em'}}>（ps：请填写以设置校验参数）</nobr>}
         </div>
-        <div className={ConnectQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
+        <div className={ProgramQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
           <nobr style={{whiteSpace: 'nowrap'}}>分值：</nobr>{this.props.isSave ? <nobr onClick={() => {this.handleEdit(this.props.id)}}>{this.props.grade}</nobr> 
             : <InputNumber ref={ c => this.grade = c } min={1} max={100}
                 defaultValue={this.props.grade ? this.props.grade : 0} />}<nobr>&nbsp;分</nobr>
@@ -470,7 +562,7 @@ export default class ConnectQ extends Component {
             <Option value='multiple'>多选题</Option>
             <Option value='blank'>判断题</Option>
             <Option value='calculate'>计算题</Option>
-            <Option value='connect'>连线题</Option>
+            <Option value='connect'>程序题</Option>
             <Option value='order'>排序题</Option>
             <Option value='answer'>解答题</Option>
             <Option value='subsection'>分段题</Option>

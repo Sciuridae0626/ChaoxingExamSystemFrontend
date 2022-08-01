@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import { Button, Input, Divider, Form, Select, Radio, Modal, Upload, Cascader, message, Space, Checkbox } from 'antd'
 import Highlighter from 'react-highlight-words'
 import { nanoid } from 'nanoid'
@@ -9,14 +10,17 @@ import InfoTable from '../../../components/InfoTable'
 import BigQ from './components/BigQ'
 import JudgeQ from './components/JudgeQ'
 import SingleQ from './components/SingleQ'
+import MultipleQ from './components/MultipleQ'
 import BlankQ from './components/BlankQ'
 import ConnectQ from './components/ConnectQ'
-import ShortQ from './components/ShortQ'
+import SortQ from './components/SortQ/'
 import CalculateQ from './components/CalculateQ'
+import ShortQ from './components/ShortQ'
+import ProgramQ from './components/ProgramQ'
+import OralQ from './components/OralQ'
 import BuildCss from './index.module.css'
 import './iconfont.css'
 import './table.css'
-import { Link } from 'react-router-dom'
 
 const { Option } = Select;
 export default class Build extends Component {
@@ -27,8 +31,7 @@ export default class Build extends Component {
     problemInfo: [],
     isSelectVisible: false,
     isAutomaticVisible: false,
-    isTemplateVisible: false,
-    haveImported: false
+    isTemplateVisible: false
   }
 
   /* 新建试卷实时统计信息 */
@@ -41,10 +44,8 @@ export default class Build extends Component {
       { year: 2019, rate: 0 }
     ]
   }
-
   /* 所属科目可选列表 */
   courseBelong = ["计算机网络", "网络安全", "信息管理", '操作系统']
-
   /* 覆盖考纲的信息 */
   outline = [
     // value：数据值；label：页面显示的标签；children：级联的下一层数据（其内对象属性同父层级）
@@ -322,16 +323,190 @@ export default class Build extends Component {
       })
     }
     else if(type === 'template') {
+              
       this.setState({isTemplateVisible: false})
-      
       message.loading({
         content: '加载中...',
         key: 'updatable',
         style: {marginTop: '8.5vh'}
       })
-      
+
+      let newProblem = [
+        {
+          id: 1, title: '判断题', number: 5, grade: 10, isSave: true, isAddSQ: false, isOverSQ: true,
+          judgeQ: [
+            {
+              id: 1, answer: 'false', grade: 2, isSave: true,
+              title: '目前使用的广域网基本都采用星型拓扑结构。'
+            },
+            {
+              id: 2, answer: 'false', grade: 2, isSave: true,
+              title: '数据报服务是一种面向连接服务。'
+            },
+            {
+              id: 3, answer: 'false', grade: 2, isSave: true,
+              title: '物理层需要完成的基本任务是封装成帧、透明传输、差错检测等。'
+            },
+            {
+              id: 4, answer: 'true', grade: 2, isSave: true,
+              title: '数据链路不等同于链路，它是在链路基础上增加了控制传输的规程。'
+            },
+            {
+              id: 5, answer: 'true', grade: 2, isSave: true,
+              title: '局域网具有结构简单、咸本低、速度快、可靠性高等优点。'
+            }
+          ],
+          singleQ: [], multipleQ: [], blankQ: [], connectQ: [], sortQ: [], calculateQ: [], shortQ: [], programQ:[], oralQ: []
+        },
+        {
+          id: 2, title: '单选题', number: 5, grade: 15, isSave: true, isAddSQ: false, isOverSQ: true,
+          singleQ: [
+            {
+              id: 1, picURL: 'true',  answer: 'B', grade: 3, isSave: true,
+              optionList: [
+                {id: 1, text: '30%'},
+                {id: 2, text: '70%'},
+                {id: 3, text: '80%'},
+                {id: 4, text: '20%'}
+              ],
+              title: '采用异步传输方式，设数据位为7位，1位校验位，1位停止位，则其通信效率为（   ）。'
+            },
+            {
+              id: 2, picURL: '',  answer: 'B', grade: 3, isSave: true,
+              optionList: [
+                {id: 1, text: '1Mbps'},
+                {id: 2, text: '10Mbps'},
+                {id: 3, text: '2.048Mbps'},
+                {id: 4, text: '1.544Mbps'}
+              ],
+              title: 'T1载波的数据传输率为（   ）。'
+            },
+            {
+              id: 3, picURL: 'true',  answer: 'D', grade: 3, isSave: true,
+              optionList: [
+                {id: 1, text: '2位'},
+                {id: 2, text: '8位'},
+                {id: 3, text: '16位'},
+                {id: 4, text: '4位'}
+              ],
+              title: '采用相位幅度调制PAM技术，可以提高数据传输速率，例如采用8种相位，每种相位取2种幅度值，可使一个码元表示的二进制数的位数为（   ）。'
+            },
+            {
+              id: 4, picURL: '',  answer: 'C', grade: 3, isSave: true,
+              optionList: [
+                {id: 1, text: '星形拓扑'},
+                {id: 2, text: '总线拓扑'},
+                {id: 3, text: '环形拓扑'},
+                {id: 4, text: '树形拓扑'}
+              ],
+              title: '若网络形状是由站点和连接站点的链路组成的一个闭合环，则称这种拓扑结构为（   ）。'
+            },
+            {
+              id: 5, picURL: '',  answer: 'B', grade: 3, isSave: true,
+              optionList: [
+                {id: 1, text: '2位'},
+                {id: 2, text: '3位'},
+                {id: 3, text: '5位'},
+                {id: 4, text: '4位'}
+              ],
+              title: '采用相位幅采用海明码纠正一位差错，若信息位为4位，则冗余位至少应为（度调制PAM技术，可以提高数据传输速率，例如采用8种相位，每种相位取2种幅度值，可使一个码元表示的二进制数的位数为（   ）。'
+            }
+          ],
+          judgeQ: [], multipleQ: [], blankQ: [], connectQ: [], sortQ: [], calculateQ: [], shortQ: [], programQ:[], oralQ: []
+        },
+        {
+          id: 3, title: '填空题', number: 5, grade: 20, isSave: true, isAddSQ: false, isOverSQ: true,
+          blankQ: [
+            {
+              id: 1, picURL: '', grade: 4, isSave: true,
+              answer: [{id: 1, text: 'UD'}, {id: 2, text: 'PCI'}],
+              title: '在SI体系结构中，PDU是由（   ）和（   ）两部分构成。'
+            },
+            {
+              id: 2, picURL: 'true', grade: 4, isSave: true,
+              answer: [{id: 1, text: '带宽'}, {id: 2, text: '时延'}],
+              title: '衡量计算机网络性能的指标很多，但最主要的两个性能指标分别是（   ）和（   ）。'
+            },
+            {
+              id: 3, picURL: '', grade: 4, isSave: true,
+              answer: [{id: 1, text: '基于距离矢量'}, {id: 2, text: '最短路径优先'}],
+              title: 'RIP协议使用的（   ）算法，OSPF使用的是（   ）算法。'
+            },
+            {
+              id: 4, picURL: 'true', grade: 4, isSave: true,
+              answer: [{id: 1, text: '域名'}, {id: 2, text: '实际IP地址'}],
+              title: 'DNS的主要功能有两个：一是确定网络主机域名的定义规则，二是将（   ）转换成（   ）。'
+            },
+            {
+              id: 5, picURL: 'true', grade: 4, isSave: true,
+              answer: [{id: 1, text: '控制连接'}, {id: 2, text: '数据连接'}],
+              title: '使用FTP进行文件传输时，FTP的客户和服务器进程之间要建立两个连接，即（   ）和（   ）。'
+            }
+          ],
+          judgeQ: [], singleQ: [], multipleQ: [], connectQ: [], sortQ: [], calculateQ: [], shortQ: [], programQ:[], oralQ: []
+        },
+        {
+          id: 4, title: '连线题', number: 1, grade: 5, isSave: true, isAddSQ: false, isOverSQ: true,
+          connectQ: [
+            {
+              id: 1, grade: 5, isSave: true,
+              answer: [
+                {id: 1, key: 'UDP', value: '用户数据报协议'},
+                {id: 2, key: 'TCP', value: '传输控制协议'},
+                {id: 3, key: 'ARP', value: '地址解析协议'},
+                {id: 4, key: 'IGP', value: '内部网关协议'},
+                {id: 5, key: 'BGP', value: '外部网关协议'}
+              ],
+              title: '请将下列五组中英文概念进行匹配。'
+            }
+          ],
+          judgeQ: [], singleQ: [], multipleQ: [], blankQ: [], sortQ: [], calculateQ: [], shortQ: [], programQ:[], oralQ: []
+        },
+        {
+          id: 5, title: '计算题', number: 1, grade: 20, isSave: true, isAddSQ: false, isOverSQ: true,
+          calculateQ: [
+            {
+              id: 1, grade: 20, isSave: true, answer: '100s、0.005s；1μs、0.005s',
+              title: '请将1.收发两端之间的传输距离为1000km，信号在媒体上的传播速率为2×108m/s。试计算以下两种情况的发送时延和传播时延：&#13;&#10;(1)数据长度为107bit，数据发送速率为100kb/s；&#13;&#10;(2)数据长度为103bit，数据发送速率为1Gb/s。'
+            }
+          ],
+          judgeQ: [], singleQ: [], multipleQ: [], blankQ: [], connectQ: [], sortQ: [], shortQ: [], programQ:[], oralQ: []
+        },
+        {
+          id: 6, title: '简答题', number: 3, grade: 30, isSave: true, isAddSQ: false, isOverSQ: true,
+          shortQ: [
+            {
+              id: 1, picURL: '', grade: 10, isSave: true,
+              keyword: [
+                {id: 1, text: '应用层'},
+                {id: 2, text: '表示层'},
+                {id: 3, text: '会话层'},
+                {id: 4, text: '传输层'},
+                {id: 5, text: '网络层'},
+                {id: 6, text: '数据链路层'},
+                {id: 7, text: '物理层'}
+              ],
+              answer: 'OSI七层模型从上到下依次为：应用层；表示层；会话层；传输层；网络层；数据链路层；物理层',
+              title: 'OSI七层模型包括哪些？'
+            },
+            {
+              id: 2, picURL: 'true', grade: 10, isSave: true,
+              keyword: [],
+              answer: '(1)监听总线，如果总线空闲，则以P的概率发送，而以（1-P）的概率延迟一个时间单位（最大传播时延的2倍）；&#13;&#10;(2)延迟了一个时间单位后，再重复步骤(1)；&#13;&#10;(3)如果总线是忙的，继续监听直至总线空闲并重复步骤(1)。',
+              title: '简述CSMA技术的P—坚持算法规则。'
+            },
+            {
+              id: 3, picURL: '', grade: 10, isSave: true,
+              keyword: [],
+              answer: '(1)第一级：对硬盘目录和文件分配表（FAT）的保护；&#13;&#10;(2)第二级：对硬盘表面损坏时的数据保护；&#13;&#10;(3)第三级：采用磁盘镜像的方法实现对磁盘驱动器损坏的保护；&#13;&#10;(4)第四级：采用磁盘双工，对磁盘通道或磁盘驱动器损坏起到保护作用。&#13;&#10;(5)第五级：采用事务跟踪系统TTS的附加容错功能。',
+              title: '简述Novell NetWare对文件服务器的共享硬盘提供的5级可靠性措施。'
+            }
+          ],
+          judgeQ: [], singleQ: [], multipleQ: [], blankQ: [], connectQ: [], sortQ: [], calculateQ: [], programQ:[], oralQ: []
+        }
+      ]
       setTimeout(() => {
-        this.setState({haveImported: true})
+        this.setState({problemInfo: newProblem})
         message.success({
           content: '模板导入成功！',
           key: 'updatable',
@@ -359,7 +534,9 @@ export default class Build extends Component {
     var newProblem = this.state.problemInfo.slice()
     newProblem.push({
       id: total+1, title: '', number: 0, grade: 0,
-      isSave: false, isAddSQ: false, isOverSQ: true, judgeQ: []})
+      isSave: false, isAddSQ: false, isOverSQ: true,
+      judgeQ: [], singleQ: [], multipleQ: [], blankQ: [], connectQ: [],
+      sortQ: [], calculateQ: [], shortQ: [], programQ: [], oralQ: []})
     this.setState({problemInfo: newProblem})
   }
   /* 删除大题的回调 */
@@ -388,6 +565,17 @@ export default class Build extends Component {
     })
     this.setState({problemInfo: newProblemInfo})
   }
+  /* 重新编辑大题的回调 */
+  editBigQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.id === id) {
+        item.isSave = false
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
 
   /* 增加小题的回调 */
 	addSmallQ = (id) => {
@@ -396,6 +584,10 @@ export default class Build extends Component {
       if(item.id === id) {
         item.isAddSQ = true
         item.isOverSQ = false
+      }
+      else {
+        item.isAddSQ = false
+        item.isOverSQ = true
       }
       return item
     })
@@ -448,18 +640,16 @@ export default class Build extends Component {
   saveJudgeQ = (id, title, answer, grade) => {
 		const {problemInfo} = this.state
     const newProblemInfo = problemInfo.map((item) => {
-      if(item.isAddSQ) {
-        const newQ = item.judgeQ.map((Q) => {
-          if(Q.id === id){
-            Q.isSave = true
-            Q.title = title
-            Q.answer = answer
-            Q.grade = grade
-          }
-          return Q
-        })
-        item.judgeQ = newQ
-      }
+      const newQ = item.judgeQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.answer = answer
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.judgeQ = newQ
       return item
     })
     this.setState({problemInfo: newProblemInfo})
@@ -468,15 +658,604 @@ export default class Build extends Component {
   editJudgeQ = (id) => {
 		const {problemInfo} = this.state
     const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.judgeQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.judgeQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加单选题的回调 */
+  addSingleQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
       if(item.isAddSQ) {
-        const newQ = item.judgeQ.map((Q) => {
+        var total = item.singleQ.length
+        item.singleQ.push({id: total+1, title: '', picURL: '', optionList: [], answer: '', grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除单选题的回调 */
+	deleteSingleQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newsingleQ = item.singleQ.filter((singleQObj)=>{
+          return singleQObj.id !== id
+        })
+        item.singleQ = newsingleQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存单选题后，去除阴影的回调 */
+  saveSingleQ = (id, title, pic, optionList, answer, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+        const newQ = item.singleQ.map((Q) => {
           if(Q.id === id){
-            Q.isSave = false
+            Q.isSave = true
+            Q.title = title
+            Q.picURL = pic
+            Q.optionList = optionList
+            Q.answer = answer
+            Q.grade = grade
           }
           return Q
         })
-        item.judgeQ = newQ
+        item.singleQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑单选题的回调 */
+  editSingleQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.singleQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.singleQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加多选题的回调 */
+  addMultipleQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.multipleQ.length
+        item.multipleQ.push({id: total+1, title: '', picURL: '', optionList: [], answer: [], grade: 0, isSave: false})
       }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除多选题的回调 */
+	deleteMultipleQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newmultipleQ = item.multipleQ.filter((multipleQObj)=>{
+          return multipleQObj.id !== id
+        })
+        item.multipleQ = newmultipleQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存多选题后，去除阴影的回调 */
+  saveMultipleQ = (id, title, pic, optionList, answer, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.multipleQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.picURL = pic
+          Q.optionList = optionList
+          Q.answer = answer
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.multipleQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑多选题的回调 */
+  editMultipleQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.multipleQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.multipleQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加填空题的回调 */
+  addBlankQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.blankQ.length
+        item.blankQ.push({id: total+1, title: '', picURL: '', answer: [], grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除填空题的回调 */
+	deleteBlankQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newblankQ = item.blankQ.filter((blankQObj)=>{
+          return blankQObj.id !== id
+        })
+        item.blankQ = newblankQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存填空题后，去除阴影的回调 */
+  saveBlankQ = (id, title, pic, answer, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.blankQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.picURL = pic
+          Q.answer = answer
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.blankQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑填空题的回调 */
+  editBlankQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.blankQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.blankQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加连线题的回调 */
+  addConnectQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.connectQ.length
+        item.connectQ.push({id: total+1, title: '', answer: [], grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除连线题的回调 */
+	deleteConnectQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newconnectQ = item.connectQ.filter((connectQObj)=>{
+          return connectQObj.id !== id
+        })
+        item.connectQ = newconnectQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存连线题后，去除阴影的回调 */
+  saveConnectQ = (id, title, answer, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.connectQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.answer = answer
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.connectQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑连线题的回调 */
+  editConnectQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.connectQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.connectQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加排序题的回调 */
+  addSortQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.sortQ.length
+        item.sortQ.push({id: total+1, title: '', answer: [], grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除排序题的回调 */
+	deleteSortQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newsortQ = item.sortQ.filter((sortQObj)=>{
+          return sortQObj.id !== id
+        })
+        item.sortQ = newsortQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存排序题后，去除阴影的回调 */
+  saveSortQ = (id, title, answer, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.sortQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.answer = answer
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.sortQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑排序题的回调 */
+  editSortQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.sortQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.sortQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加计算题的回调 */
+  addCalculateQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.calculateQ.length
+        item.calculateQ.push({id: total+1, title: '', picURL: '', answer: '', grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除计算题的回调 */
+	deleteCalculateQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newcalculateQ = item.calculateQ.filter((calculateQObj)=>{
+          return calculateQObj.id !== id
+        })
+        item.calculateQ = newcalculateQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存计算题后，去除阴影的回调 */
+  saveCalculateQ = (id, title, pic, answer, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.calculateQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.picURL = pic
+          Q.answer = answer
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.calculateQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑计算题的回调 */
+  editCalculateQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.calculateQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.calculateQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加简答题的回调 */
+  addShortQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.shortQ.length
+        item.shortQ.push({id: total+1, title: '', picURL: '', keyword: [], answer: '', grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除简答题的回调 */
+	deleteShortQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newshortQ = item.shortQ.filter((shortQObj)=>{
+          return shortQObj.id !== id
+        })
+        item.shortQ = newshortQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存简答题后，去除阴影的回调 */
+  saveShortQ = (id, title, picURL, keyword, answer, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.shortQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.picURL = picURL
+          Q.keyword = keyword
+          Q.answer = answer
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.shortQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑简答题的回调 */
+  editShortQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.shortQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.shortQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加程序题的回调 */
+  addProgramQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.programQ.length
+        item.programQ.push({id: total+1, title: '', picURL: '', inputExplain: '', outputExplain: '',
+          timeLimit: 5000, spaceLimit: 20000, timeUnit: 'ms', spaceUnit: 'KB', example: [], grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除程序题的回调 */
+	deleteProgramQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const newprogramQ = item.programQ.filter((programQObj)=>{
+          return programQObj.id !== id
+        })
+        item.programQ = newprogramQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存程序题后，去除阴影的回调 */
+  saveProgramQ = (id, title, pic, input, output, example, timeLimit, spaceLimit, timeUnit, spaceUnit, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.programQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.picURL = pic
+          Q.inputExplain = input
+          Q.outputExplain = output
+          Q.example = example
+          Q.timeLimit = timeLimit
+          Q.spaceLimit = spaceLimit
+          Q.timeUnit = timeUnit
+          Q.spaceUnit = spaceUnit
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.programQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑程序题的回调 */
+  editProgramQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.programQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.programQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+
+  /* 增加口语题的回调 */
+  addOralQ = () => {
+    var newProblem = this.state.problemInfo
+    newProblem.map((item) => {
+      if(item.isAddSQ) {
+        var total = item.oralQ.length
+        item.oralQ.push({id: total+1, title: '', grade: 0, isSave: false})
+      }
+      return item
+    })
+    this.setState({problemInfo: newProblem})
+  }
+  /* 删除口语题的回调 */
+	deleteOralQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      if(item.isAddSQ) {
+        const neworalQ = item.oralQ.filter((oralQObj)=>{
+          return oralQObj.id !== id
+        })
+        item.oralQ = neworalQ
+      }
+      return item
+    })
+		this.setState({problemInfo: newProblemInfo})
+    message.success({
+        content: '删除成功！',
+        style: {marginTop: '8.5vh'}
+    })
+	}
+  /* 保存口语题后，去除阴影的回调 */
+  saveOralQ = (id, title, grade) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.oralQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = true
+          Q.title = title
+          Q.grade = grade
+        }
+        return Q
+      })
+      item.oralQ = newQ
+      return item
+    })
+    this.setState({problemInfo: newProblemInfo})
+  }
+  /* 重新编辑口语题的回调 */
+  editOralQ = (id) => {
+		const {problemInfo} = this.state
+    const newProblemInfo = problemInfo.map((item) => {
+      const newQ = item.oralQ.map((Q) => {
+        if(Q.id === id){
+          Q.isSave = false
+        }
+        return Q
+      })
+      item.oralQ = newQ
       return item
     })
     this.setState({problemInfo: newProblemInfo})
@@ -510,7 +1289,7 @@ export default class Build extends Component {
   }
 
   render() {
-    const {problemInfo, isSelectVisible, isAutomaticVisible, isTemplateVisible, haveImported} = this.state
+    const {problemInfo, isSelectVisible, isAutomaticVisible, isTemplateVisible} = this.state
     const showTotal = (total) => <p> 共{total}条&emsp; </p>
     const columns = [
       {
@@ -608,27 +1387,24 @@ export default class Build extends Component {
           <div className={BuildCss.leftTopWrapper}>
             <div className={BuildCss.lineWrapper} style={{ width: '80%' }}> <p style={{fontSize: 16}}>添加题目</p> </div>
             <div className={BuildCss.lineWrapper} style={{ width: '80%' }}>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-danxuan' style={{color: '#7B7B7B'}} />}>单选题</Button>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-duoxuan' style={{color: '#7B7B7B'}} />}>多选题</Button>
-            </div>
-            <div className={BuildCss.lineWrapper} style={{ width: '80%' }}>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-tiankong' style={{color: '#7B7B7B'}} />}>填空题</Button>
               <Button onClick={this.addJudgeQ} size='small' type="ghost" icon={<MyIcon type='icon-panduan' style={{color: '#7B7B7B'}} />}>判断题</Button>
+              <Button onClick={this.addSingleQ} size='small' type="ghost" icon={<MyIcon type='icon-danxuan' style={{color: '#7B7B7B'}} />}>单选题</Button>
             </div>
             <div className={BuildCss.lineWrapper} style={{ width: '80%' }}>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-jisuan' style={{color: '#7B7B7B'}} />}>计算题</Button>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-lianxian' style={{color: '#7B7B7B'}} />}>连线题</Button>
+              <Button onClick={this.addMultipleQ} size='small' type="ghost" icon={<MyIcon type='icon-duoxuan' style={{color: '#7B7B7B'}} />}>多选题</Button>
+              <Button onClick={this.addBlankQ} size='small' type="ghost" icon={<MyIcon type='icon-tiankong' style={{color: '#7B7B7B'}} />}>填空题</Button>
             </div>
             <div className={BuildCss.lineWrapper} style={{ width: '80%' }}>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-paixu' style={{color: '#7B7B7B'}} />}>排序题</Button>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-jieda' style={{color: '#7B7B7B'}} />}>解答题</Button>
+              <Button onClick={this.addConnectQ} size='small' type="ghost" icon={<MyIcon type='icon-lianxian' style={{color: '#7B7B7B'}} />}>连线题</Button>
+              <Button onClick={this.addSortQ} size='small' type="ghost" icon={<MyIcon type='icon-paixu' style={{color: '#7B7B7B'}} />}>排序题</Button>
             </div>
             <div className={BuildCss.lineWrapper} style={{ width: '80%' }}>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-fenduan' style={{color: '#7B7B7B'}} />}>分段题</Button>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-chengxu' style={{color: '#7B7B7B'}} />}>程序题</Button>
+              <Button onClick={this.addCalculateQ} size='small' type="ghost" icon={<MyIcon type='icon-jisuan' style={{color: '#7B7B7B'}} />}>计算题</Button>
+              <Button onClick={this.addShortQ} size='small' type="ghost" icon={<MyIcon type='icon-jieda' style={{color: '#7B7B7B'}} />}>简答题</Button>
             </div>
             <div className={BuildCss.lineWrapper} style={{ width: '80%' }}>
-              <Button size='small' type="ghost" icon={<MyIcon type='icon-kouyu' style={{color: '#7B7B7B'}} />}>口语题</Button>
+              <Button onClick={this.addProgramQ} size='small' type="ghost" icon={<MyIcon type='icon-chengxu' style={{color: '#7B7B7B'}} />}>程序题</Button>
+              <Button onClick={this.addOralQ} size='small' type="ghost" icon={<MyIcon type='icon-kouyu' style={{color: '#7B7B7B'}} />}>口语题</Button>
             </div>
           </div>
           {/* 实时统计 */}
@@ -657,80 +1433,7 @@ export default class Build extends Component {
         </div>
 
         {/* 中部 */}
-        {haveImported ? <div id='middle' className={BuildCss.middleWrapper} onClick={this.deleteShadow}>
-          {/* 试卷头部 */}
-          <Input id={BuildCss.title} value="计算机网络 2021-2022-2期末A卷" bordered={false}
-            style={{ fontSize: '1.5em', width: '100%', textAlign: 'center', color: '#181818', fontWeight: 'bold' }} />
-          <Input value="本卷用于《计算机网络》课程2021-2022学年第2学期期末测试" bordered={false}
-            style={{ fontSize: '1em', width: '100%', textAlign: 'center', marginTop: '1%' }} />
-          <Divider dashed style={{ borderColor: 'black', marginTop: '10px', marginBottom: '3%' }}/>
-          {/* 试卷快捷按钮 */}
-          <div className={BuildCss.lineWrapper} style={{ width: '90%', marginBottom: '4%' }}>
-            <Button size='small' type='primary' ghost onClick={this.addBigQ}>&emsp;创建大题&emsp;</Button>
-            <Button size='small' type='primary' ghost onClick={() => this.showModal('select')}>&emsp;从题库中选择&emsp;</Button>
-            <Button size='small' type='primary' ghost onClick={() => this.showModal('automatic')}>&emsp;自动组卷&emsp;</Button>
-            <Button size='small' type='primary' ghost onClick={() => this.showModal('template')}>&emsp;模板导入&emsp;</Button>
-          </div>
-          {/* 试题 */}
-            <div key={nanoid()} style={{width: '100%'}} className="paper">
-              <BigQ index={1} title="判断题" number={5} grade={10} isSave={true}
-                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
-              <JudgeQ index={1} title="目前使用的广域网基本都采用星型拓扑结构。" answer="false" grade={2} isSave={true}
-                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
-              <JudgeQ index={2} title="数据报服务是一种面向连接服务。" answer="false" grade={2} isSave={true}
-                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
-              <JudgeQ index={3} title="物理层需要完成的基本任务是封装成帧、透明传输、差错检测等。" answer="false" grade={2} isSave={true}
-                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
-              <JudgeQ index={4} title="数据链路不等同于链路，它是在链路基础上增加了控制传输的规程。" answer="true" grade={2} isSave={true}
-                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
-              <JudgeQ index={5} title="局域网具有结构简单、咸本低、速度快、可靠性高等优点。" answer="true" grade={2} isSave={true}
-                deleteJudgeQ={this.deleteJudgeQ} saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
-
-              <BigQ index={2} title="选择题" number={5} grade={15} isSave={true}
-                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
-              <SingleQ index={1} title="采用异步传输方式，设数据位为7位，1位校验位，1位停止位，则其通信效率为（   ）" answer="B"
-                A="30%" B="70%" C="80%" D="20%" grade={3} isSave={true}/>
-              <SingleQ index={2} title="T1载波的数据传输率为（   ）" answer="D"
-                A="1Mbps" B="10Mbps" C="2.048Mbps" D="1.544Mbps" grade={3} isSave={true}/>
-              <SingleQ index={3} title="采用相位幅度调制PAM技术，可以提高数据传输速率，例如采用8种相位，每种相位取2种幅度值，可使一个码元表示的二进制数的位数为（   ）" answer="D"
-                A="2位" B="8位" C="16位" D="4位" grade={3} isSave={true}/>
-              <SingleQ index={4} title="若网络形状是由站点和连接站点的链路组成的一个闭合环，则称这种拓扑结构为（   ）" answer="C"
-                A="星形拓扑" B="总线拓扑" C="环形拓扑" D="树形拓扑" grade={3} isSave={true}/>
-              <SingleQ index={5} title="采用海明码纠正一位差错，若信息位为4位，则冗余位至少应为（   ）" answer="B"
-                A="2位" B="3位" C="5位" D="4位" grade={3} isSave={true}/>
-
-              <BigQ index={3} title="填空题" number={5} grade={20} isSave={true}
-                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
-              <BlankQ index={1} title="在SI体系结构中，PDU是由（   ）和（   ）两部分构成。" answer={["UD", "PCI"]} grade={4} isSave={true} />
-              <BlankQ index={2} title="衡量计算机网络性能的指标很多，但最主要的两个性能指标分别是（   ）和（   ）。" answer={["带宽", "时延"]} grade={4} isSave={true} />
-              <BlankQ index={3} title="RIP协议使用的（   ）算法，OSPF使用的是（   ）算法。" answer={["基于距离矢量", "最短路径优先"]} grade={4} isSave={true} />
-              <BlankQ index={4} title="DNS的主要功能有两个：一是确定网络主机域名的定义规则，二是将（   ）转换成（   ）。" answer={["域名", "实际IP地址"]} grade={4} isSave={true} />
-              <BlankQ index={5} title="使用FTP进行文件传输时，FTP的客户和服务器进程之间要建立两个连接，即（   ）和（   ）。" answer={["控制连接", "数据连接"]} grade={4} isSave={true} />
-
-              <BigQ index={4} title="连线题" number={5} grade={5} isSave={true}
-                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
-              <p style={{padding: "2% 5%"}}>备选项：A.地址解析协议&emsp;B.用户数据报协议&emsp;C.传输控制协议&emsp;D.外部网关协议&emsp;E.内部网关协议</p>
-              <ConnectQ index={1} title="UDP" answer="B" isSave={true} grade={1} />
-              <ConnectQ index={2} title="TCP" answer="C" isSave={true} grade={1} />
-              <ConnectQ index={3} title="ARP" answer="A" isSave={true} grade={1} />
-              <ConnectQ index={4} title="IGP" answer="E" isSave={true} grade={1} />
-              <ConnectQ index={5} title="BGP" answer="D" isSave={true} grade={1} />
-
-              <BigQ index={5} title="简答题" number={3} grade={30} isSave={true}
-                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
-              <ShortQ index={1} title="OSI七层模型包括哪些？" keyword="应用层；表示层；会话层；传输层；网络层；数据链路层；物理层" answer="OSI七层模型从上到下依次为：应用层；表示层；会话层；传输层；网络层；数据链路层；物理层" isSave={true} grade={10} />
-              <ShortQ index={2} title="简述CSMA技术的P—坚持算法规则。" keyword="" answer="(1)监听总线，如果总线空闲，则以P的概率发送，而以（1-P）的概率延迟一个时间单位（最大传播时延的2倍）；&#13;&#10;(2)延迟了一个时间单位后，再重复步骤(1)；&#13;&#10;(3)如果总线是忙的，继续监听直至总线空闲并重复步骤(1)。" isSave={true} grade={10} />
-              <ShortQ index={3} title="简述Novell NetWare对文件服务器的共享硬盘提供的5级可靠性措施。" keyword="" answer="(1)第一级：对硬盘目录和文件分配表（FAT）的保护；&#13;&#10;(2)第二级：对硬盘表面损坏时的数据保护；&#13;&#10;(3)第三级：采用磁盘镜像的方法实现对磁盘驱动器损坏的保护；&#13;&#10;(4)第四级：采用磁盘双工，对磁盘通道或磁盘驱动器损坏起到保护作用。&#13;&#10;(5)第五级：采用事务跟踪系统TTS的附加容错功能。" isSave={true} grade={10} />
-              
-              <BigQ index={6} title="计算题" number={1} grade={20} isSave={true}
-                deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
-              <CalculateQ index={1} title="1.收发两端之间的传输距离为1000km，信号在媒体上的传播速率为2×108m/s。试计算以下两种情况的发送时延和传播时延：&#13;&#10;(1)数据长度为107bit，数据发送速率为100kb/s；&#13;&#10;(2)数据长度为103bit，数据发送速率为1Gb/s。"
-                answer="100s、0.005s；1μs、0.005s" process="(1)发送时延= 数据长度（比特）/ 发送速率（比特/每秒）= 107 / 100000 = 107 / 105 = 100s；&#13;&#10;传播时延= 信道长度（米）/ 信号在信道上的传播速率（米/每秒）= 106 / (2 × 108) = 0.005s；&#13;&#10;
-                  (2)发送时延= 数据长度（比特）/ 发送速率（比特/每秒）= 103/1000 000 000 = 103 / 109 = 1μs；&#13;&#10;传播时延= 信道长度（米）/ 信号在信道上的传播速率（米/每秒）= 106 / (2 × 108) = 0.005s。" isSave={true} grade={20} />
-            </div>
-        </div>
-        
-        : <div id='middle' className={BuildCss.middleWrapper} onClick={this.deleteShadow}>
+        <div id='middle' className={BuildCss.middleWrapper} onClick={this.deleteShadow}>
           {/* 试卷头部 */}
           <Input id={BuildCss.title} placeholder="请输入试卷名称" bordered={false}
             style={{ fontSize: '1.5em', width: '100%', textAlign: 'center', color: '#181818', fontWeight: 'bold' }} />
@@ -748,16 +1451,52 @@ export default class Build extends Component {
           {problemInfo.map((item, index) => {
               return (
                 <div key={nanoid()} style={{width: '100%'}}>
-                  <BigQ index={index+1} {...item} deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ}
-                    addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
+                  <BigQ ref={this[`BigQ${index}Ref`]} index={index+1} {...item} deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ}
+                    editBigQ={this.editBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
                   {item.judgeQ.map((item, index) => {
-                    return <JudgeQ index={index+1} {...item} deleteJudgeQ={this.deleteJudgeQ} 
+                    return <JudgeQ key={nanoid()} index={index+1} {...item} deleteJudgeQ={this.deleteJudgeQ}
                       saveJudgeQ={this.saveJudgeQ} editJudgeQ={this.editJudgeQ} />
+                  })}
+                  {item.singleQ.map((item, index) => {
+                    return <SingleQ key={nanoid()} index={index+1} {...item} deleteSingleQ={this.deleteSingleQ} 
+                      saveSingleQ={this.saveSingleQ} editSingleQ={this.editSingleQ} />
+                  })}
+                  {item.multipleQ.map((item, index) => {
+                    return <MultipleQ key={nanoid()} index={index+1} {...item} deleteMultipleQ={this.deleteMultipleQ} 
+                    saveMultipleQ={this.saveMultipleQ} editMultipleQ={this.editMultipleQ} />
+                  })}
+                  {item.blankQ.map((item, index) => {
+                    return <BlankQ key={nanoid()} index={index+1} {...item} deleteBlankQ={this.deleteBlankQ} 
+                    saveBlankQ={this.saveBlankQ} editBlankQ={this.editBlankQ} />
+                  })}
+                  {item.connectQ.map((item, index) => {
+                    return <ConnectQ key={nanoid()} index={index+1} {...item} deleteConnectQ={this.deleteConnectQ} 
+                    saveConnectQ={this.saveConnectQ} editConnectQ={this.editConnectQ} />
+                  })}
+                  {item.sortQ.map((item, index) => {
+                    return <SortQ key={nanoid()} index={index+1} {...item} deleteSortQ={this.deleteSortQ} 
+                    saveSortQ={this.saveSortQ} editSortQ={this.editSortQ} />
+                  })}
+                  {item.calculateQ.map((item, index) => {
+                    return <CalculateQ key={nanoid()} index={index+1} {...item} deleteCalculateQ={this.deleteCalculateQ} 
+                    saveCalculateQ={this.saveCalculateQ} editCalculateQ={this.editCalculateQ} />
+                  })}
+                  {item.shortQ.map((item, index) => {
+                    return <ShortQ key={nanoid()} index={index+1} {...item} deleteShortQ={this.deleteShortQ} 
+                    saveShortQ={this.saveShortQ} editShortQ={this.editShortQ} />
+                  })}
+                  {item.programQ.map((item, index) => {
+                    return <ProgramQ key={nanoid()} index={index+1} {...item} deleteProgramQ={this.deleteProgramQ} 
+                    saveProgramQ={this.saveProgramQ} editProgramQ={this.editProgramQ} />
+                  })}
+                  {item.oralQ.map((item, index) => {
+                    return <OralQ key={nanoid()} index={index+1} {...item} deleteOralQ={this.deleteOralQ} 
+                    saveOralQ={this.saveOralQ} editOralQ={this.editOralQ} />
                   })}
                 </div>
                 )
             })}
-        </div>}
+        </div>
 
         {/* 右列 */}
         <div className={BuildCss.rightWrapper}>

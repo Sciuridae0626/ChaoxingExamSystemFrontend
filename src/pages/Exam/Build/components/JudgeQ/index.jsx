@@ -213,12 +213,17 @@ export default class JudgeQ extends Component {
     </Menu>
   )
 
+  /* 组件挂载完毕的钩子 */
+  componentDidMount = () => {
+    if(!this.props.isSave) this.title.focus()
+    this.setState({radioValue: this.props.answer})
+  }
+
   /* 显示对话框 */
   showModal = (type) => {
     if(type === 'analysis') this.setState({isAnalysisVisible: true})
     else if(type === 'automatic') this.setState({isAutomaticVisible: true})
   }
-
   /* 点击对话框确定按钮 */
   handleOk = (type) => {
     if(type === 'analysis') {
@@ -236,23 +241,16 @@ export default class JudgeQ extends Component {
       })
     }
   }
-
   /* 点击对话框取消按钮 */
   handleCancel = (type) => {
     if(type === 'analysis') this.setState({isAnalysisVisible: false})
     else if(type === 'automatic') this.setState({isAutomaticVisible: false})
   }
 
-  /* 组件挂载完毕的钩子 */
-  componentDidMount = () => {
-    this.setState({radioValue: this.props.answer})
-  }
-
   /* 文本域发生变化时的回调 */
   onTextAreaChange = ({ target: { value } }) => {
     this.setState({textArea: value});
   }
-
   /* 判断框组发生变化时的回调 */
   onRadiochange = (event) => {
     this.setState({radioValue: event.target.value})
@@ -264,15 +262,13 @@ export default class JudgeQ extends Component {
       this.props.deleteJudgeQ(id)
     }
   }
-
   /* 执行保存小题的回调 */
   handleSave = (id) => {
-    let title = this.title.resizableTextArea.props.value;
+    let title = this.title.resizableTextArea.props.value
     let answer = this.state.radioValue
-    let grade = this.grade.value;
+    let grade = this.grade.value
     this.props.saveJudgeQ(id, title, answer, grade)
   }
-
   /* 执行编辑小题的回调 */
   handleEdit = (id) => {
     this.props.editJudgeQ(id)
@@ -340,9 +336,9 @@ export default class JudgeQ extends Component {
     return (
       <div className={this.props.isSave ? JudgeQCss.mainWrapper : JudgeQCss.mainWrapperShadow}>
         {/* 判断题题干行 */}
-        <div className={JudgeQCss.lineWrapper} style={{color: '#7B7B7B', justifyContent: 'space-between'}}>
-          <div className={JudgeQCss.lineWrapper}> {this.props.index}.&emsp;
-          {this.props.isSave ? <nobr style={{color: '#1B1B1B'}}>{this.props.title}</nobr>
+        <div className={JudgeQCss.lineWrapper} style={{color: '#7B7B7B', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+          <div className={JudgeQCss.lineWrapper} style={{alignItems: 'flex-start'}}> {this.props.index}.&emsp;
+          {this.props.isSave ? <div style={{color: '#1B1B1B', wordBreak: 'break-all'}} onClick={() => {this.handleEdit(this.props.id)}}>{this.props.title}</div>
             : <TextArea ref={ c => this.title = c } style={{ marginLeft: 10, marginRight: 20, resize: 'none' }}
             value={this.state.value} autoSize onChange={this.onTextAreaChange} placeholder="请输入题干"
             defaultValue={this.props.title} />}</div>
@@ -366,9 +362,9 @@ export default class JudgeQ extends Component {
         {/* 设置行 */}
         <div className={JudgeQCss.lineWrapper} style={{ justifyContent: 'space-between', marginTop: 20}}>
           <div className={JudgeQCss.lineWrapper} style={{ width: '70%' }}>
-            {this.props.isSave ? <Radio.Group value={this.props.answer} disabled>
-                <Radio value='true'>对&emsp;</Radio>
-                <Radio value='false'>错</Radio>&emsp;
+            {this.props.isSave ? <Radio.Group value={this.props.answer}>
+                <Radio value='true' onClick={() => {this.handleEdit(this.props.id)}}>对&emsp;</Radio>
+                <Radio value='false' onClick={() => {this.handleEdit(this.props.id)}}>错</Radio>&emsp;
               </Radio.Group>
               : <Radio.Group onChange={this.onRadiochange} defaultValue={this.props.answer}>
                   <Radio value='true' defaultChecked>对&emsp;</Radio>
@@ -377,9 +373,9 @@ export default class JudgeQ extends Component {
             {this.props.isSave ? '' : <nobr style={{color: '#7B7B7B', fontSize: 10}}>（ps：请选择以设置正确答案）</nobr>}
           </div>
           <div className={JudgeQCss.lineWrapper} style={{ width: '30%', justifyContent: 'flex-end' }}>
-            <nobr style={{whiteSpace: 'nowrap'}}>分值：</nobr>{this.props.isSave ? <nobr>{this.props.grade}</nobr> 
+            <nobr style={{whiteSpace: 'nowrap'}}>分值：</nobr>{this.props.isSave ? <nobr onClick={() => {this.handleEdit(this.props.id)}}>{this.props.grade}</nobr> 
               : <InputNumber ref={ c => this.grade = c } min={1} max={100}
-                  defaultValue={this.props.grade ? this.props.grade : ''} />}<nobr>&nbsp;分</nobr>
+                  defaultValue={this.props.grade ? this.props.grade : 0} />}<nobr>&nbsp;分</nobr>
             {!this.props.isSave ? <Tooltip title="更多">
               <Dropdown overlay={this.menu} placement="bottomLeft" arrow trigger='click'>
                 <MyIcon style={{ marginLeft: '5%', cursor: 'pointer' }} type='icon-gengduo' onClick={this.more} />

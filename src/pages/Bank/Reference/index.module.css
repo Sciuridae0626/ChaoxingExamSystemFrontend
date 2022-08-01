@@ -70,10 +70,20 @@
     overflow: hidden;
 }
 
-/* 爬虫结果展示区父容器 */
-.detailsWrapper {
+/* 爬虫结果、来源网址、图片素材总区域 */
+.returnWrapper {
     width: 100%;
     height: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 爬虫结果展示区父容器 */
+.leftWrapper {
+    width: 60%;
+    height: 100%;
     padding: 1% 2%;
     border-radius: 5px;
     box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
@@ -83,4 +93,41 @@
     align-items: flex-start;
 	white-space: pre-line;
     overflow-y: auto;
+}
+
+/* 来源网址、图片素材总区域 */
+.rightWrapper {
+    width: 37%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 来源网址展示区父容器 */
+.sourceWrapper {
+    width: 100%;
+    height: 40%;
+    padding: 1% 2%;
+    border-radius: 5px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+	white-space: pre-line;    
+}
+
+/* 图片素材展示区父容器 */
+.pictureWrapper {
+    width: 100%;
+    height: 55%;
+    padding: 1% 2%;
+    border-radius: 5px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
