@@ -1273,19 +1273,22 @@ export default class Build extends Component {
   /* 完成创建的回调 */
   finish = () => {
     if(window.confirm("已更新该卷考纲覆盖率和近三年重复率，是否确认完成创建？")){
-      // console.log(document.querySelector('.paper'))
-      // let blob = new Blob([document.querySelector('.paper')],{type:"application/msword;charset=utf-8"});
-      // saveAs(blob, "test.doc");
-      exportWord({
-        selector: ".paper",
-        style: "p{whiteSpace: 'nowrap';}",
-        filename: "exportTest"
-      })
       message.success({
           content: '创建成功！已提交管理员审核',
           style: {marginTop: '8.5vh'}
       })
     }
+  }
+
+  print = () => {
+    // console.log(document.querySelector('.paper'))
+    // let blob = new Blob([document.querySelector('.paper')],{type:"application/msword;charset=utf-8"});
+    // saveAs(blob, "test.doc");
+    exportWord({
+      selector: ".paper",
+      style: "p{whiteSpace: 'nowrap';}",
+      filename: "计算机网络"
+    })
   }
 
   render() {
@@ -1435,9 +1438,9 @@ export default class Build extends Component {
         {/* 中部 */}
         <div id='middle' className={BuildCss.middleWrapper} onClick={this.deleteShadow}>
           {/* 试卷头部 */}
-          <Input id={BuildCss.title} placeholder="请输入试卷名称" bordered={false}
+          <Input id={BuildCss.title} class="paper" placeholder="请输入试卷名称" bordered={false}
             style={{ fontSize: '1.5em', width: '100%', textAlign: 'center', color: '#181818', fontWeight: 'bold' }} />
-          <Input placeholder="点击设置描述" bordered={false}
+          <Input placeholder="点击设置描述" class="paper" bordered={false}
             style={{ fontSize: '1em', width: '100%', textAlign: 'center', marginTop: '1%' }} />
           <Divider dashed style={{ borderColor: 'black', marginTop: '10px', marginBottom: '3%' }}/>
           {/* 试卷快捷按钮 */}
@@ -1450,7 +1453,7 @@ export default class Build extends Component {
           {/* 试题 */}
           {problemInfo.map((item, index) => {
               return (
-                <div key={nanoid()} style={{width: '100%'}}>
+                <div key={nanoid()} style={{width: '100%'}} class="paper">
                   <BigQ ref={this[`BigQ${index}Ref`]} index={index+1} {...item} deleteBigQ={this.deleteBigQ} saveBigQ={this.saveBigQ}
                     editBigQ={this.editBigQ} addSmallQ={this.addSmallQ} overSmallQ={this.overSmallQ} />
                   {item.judgeQ.map((item, index) => {
@@ -1538,7 +1541,7 @@ export default class Build extends Component {
             </Form.Item>
 
             <div className={BuildCss.lineWrapper} style={{ width: '100%', marginBottom: '8%', justifyContent: 'flex-end' }}>
-              <Button size='small' type='primary' ghost>&nbsp;预览&nbsp;</Button>
+              <Button size='small' type='primary' onClick={this.print} ghost>&nbsp;预览&nbsp;</Button>
             </div>
 
             <Form.Item>

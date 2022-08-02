@@ -30,6 +30,7 @@
 
 /* 搜索框前提示文字 */
 .searchWrapper > p {
+    width: 35%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -45,13 +46,14 @@
 
 /* 立即搜索按钮 */
 #searchButton {
-    margin-right: 2%;
+    margin-left: 2%;
     background-color: #67A1F3;
     color: white;
 }
 
 /* 换一批按钮 */
 #changeButton {
+    margin-left: 2%;
     border-color: #67A1F3;
     color: #67A1F3;
 }
