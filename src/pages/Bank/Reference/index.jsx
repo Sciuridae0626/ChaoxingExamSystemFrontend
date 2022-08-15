@@ -82,11 +82,11 @@ export default class Reference extends Component {
           <div className={ReferenceCss.searchWrapper}>
             <p>请输入搜索课程的关键词</p>
             <Input onChange = {this.keywordOnChange} className={ReferenceCss.searchInput} placeholder="例：计算机网络" onPressEnter={this.clickSearch} />
-            <Select defaultValue="www.wenkusou.com" onChange={this.urlOnChange} >
-              <Option value="www.wenkusou.com">www.wenkusou.com</Option>
+            <Select defaultValue="www.zhaotiba.com" onChange={this.urlOnChange} >
               <Option value="www.zhaotiba.com">www.zhaotiba.com</Option>
               <Option value="www.zuoyewuyou.com">www.zuoyewuyou.com</Option>
               <Option value="www.wendaku.com">www.wendaku.com</Option>
+              <Option value="www.wenkusou.com">www.wenkusou.com</Option>
               <Option value="www.shangxueba.com">www.shangxueba.com</Option>
               <Option value="www.tikuwang.com">www.tikuwang.com</Option>
             </Select>
